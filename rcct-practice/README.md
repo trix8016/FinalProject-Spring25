@@ -10,7 +10,7 @@ Open `index.html` in any modern browser (phone, iPad or laptop). No install or s
 | Symbol | One Landolt C in the middle, gap up/down/left/right | Sloan letters C D H K N O R S V Z in a crosshair | 1-2 digit number hidden in colored dots |
 | Answer | Arrow key, on-screen arrow, or swipe toward the gap | Letter key or on-screen letter | Number pad, N for no number |
 | Contrast | Adaptive Psi-marginal method, 20 rings per color | Fixed fade: 10 steps of 0.16 log units, 2 letters each | 25 red-green plates at 5 color strengths, optional 12 blue-yellow |
-| Timing | Stays until answered (default) or 5 s limit | 1.0-1.6 s flash, then blank, or no limit | No limit (default) or 5 s |
+| Timing | Stays until answered (default, matches the clinic test she took) or 5 s limit | 1.0-1.6 s flash, then blank, or no limit | Stays until answered (default, matches the clinic test she took) or 5 s |
 | Size | 1.24 deg ring (13 mm at 60 cm) | 20/330 and 20/440 letters | ~6.9 deg plate, capped to fit the screen |
 | Score | Threshold on the Rabin scale, 0-175 | Letters correct x 5, 0-100 | Plates correct, of 25 |
 | FAA pass | 55 per color, each eye | 55 per color, each eye | 21 of 25 (as reported by providers) |
@@ -60,3 +60,9 @@ Open `index.html` in any modern browser (phone, iPad or laptop). No install or s
 - Evaluation of the performance of the Waggoner computerised colour vision test (2025). https://avehjournal.org/index.php/aveh/article/view/1027
 - Ng JS et al. Evaluation of the Waggoner Computerized Color Vision Test. Optom Vis Sci. 2015. https://journals.lww.com/optvissci/fulltext/2015/04000/evaluation_of_the_waggoner_computerized_color.14.aspx
 - Machado GM, Oliveira MM, Fernandes LAF. A physiologically-based model for simulation of color vision deficiency. IEEE TVCG 2009.
+
+## Calibration notes from real use
+
+- Ring test: after 3-4 practice runs, her left-eye green score was about 40, the same as her clinic score of 40.
+  This suggests the ring score scale matches the clinic device for her.
+- Clinic ring test and Waggoner plates both stayed on screen until answered; the defaults match this.

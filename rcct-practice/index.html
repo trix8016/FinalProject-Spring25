@@ -393,7 +393,7 @@ footer { color: var(--ink-3); font-size: 13px; }
             <tr><td>Answer</td><td>Press the arrow that points to the gap</td><td>Read the letter aloud, or the tech enters it</td><td>Number keypad, N if you see no number</td></tr>
             <tr><td>Eyes</td><td>One eye at a time: red, green, blue</td><td>One eye at a time: 20 red, 20 green, 20 blue</td><td>Usually both eyes</td></tr>
             <tr><td>Contrast</td><td>Adaptive: fainter after right answers, stronger after wrong ones (Bayesian Psi method)</td><td>Fixed fade: 10 steps of 0.16 log units, 2 letters each. Red and green 27.5% to 1%, blue 173% to about 6%</td><td>A fixed set of plates. Practice plates use 5 color strengths</td></tr>
-            <tr><td>Timing</td><td>Ring stays until you answer. Published studies used a 5-second limit</td><td>Each letter shows 1.0 to 1.6 s, then blank gray for the same time</td><td>Not published</td></tr>
+            <tr><td>Timing</td><td>Ring stays until you answer. Published studies used a 5-second limit</td><td>Each letter shows 1.0 to 1.6 s, then blank gray for the same time</td><td>Plate stays until you answer</td></tr>
             <tr><td>Score</td><td>Contrast threshold on the Rabin scale, 0 to 175</td><td>Letters correct × 5, from 0 to 100</td><td>Plates read correctly, of 25</td></tr>
             <tr><td>FAA pass</td><td>55 or more in each color, each eye</td><td>55 or more in each color, each eye</td><td>21 or more of 25, as reported by test providers</td></tr>
           </tbody>
@@ -820,7 +820,7 @@ function bindSeg(name, get, set, after) {
 const COPY = {
   ring: {
     full: 'both eyes · 120 rings · ~5 min', eye: '60 rings · ~2.5 min', cone: '20 rings · ~1 min',
-    selfLab: 'Stays until you answer', selfSub: 'ring stays on screen', timedLab: '5-second limit', timedSub: 'as in published studies',
+    selfLab: 'Stays until you answer', selfSub: 'like the clinic test', timedLab: '5-second limit', timedSub: 'as in published studies',
     keys: 'Show arrow buttons on screen. You can also swipe toward the gap.',
     how: 'Keyboard: <kbd>↑</kbd><kbd>→</kbd><kbd>↓</kbd><kbd>←</kbd> point to the gap · <kbd>Space</kbd> can\'t see · <kbd>Esc</kbd> stop',
     start: 'Start ring test', demo: 'Try a 6-ring demo',
@@ -833,7 +833,7 @@ const COPY = {
     start: 'Start letter test', demo: 'Try a 6-letter demo',
   },
   plates: {
-    selfLab: 'No time limit', selfSub: 'plate stays until you answer', timedLab: '5 seconds per plate', timedSub: 'real timing not published',
+    selfLab: 'Stays until you answer', selfSub: 'like the clinic test', timedLab: '5 seconds per plate', timedSub: 'extra time pressure',
     keys: 'Show number pad on screen.',
     how: 'Keyboard: type the number, <kbd>Enter</kbd> to submit · <kbd>N</kbd> no number · <kbd>Backspace</kbd> delete · <kbd>Esc</kbd> stop',
     start: 'Start plate test', demo: 'Try a 3-plate demo',
