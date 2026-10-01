@@ -6,16 +6,17 @@
 </head>
 <body>
 <title>RCCT Practice Test</title>
-<meta name="description" content="Practice version of the Rabin Cone Contrast Test (RCCT) with cone-isolating letters, clinic timing and FAA scoring.">
+<meta name="description" content="Practice versions of the Rabin Cone Contrast Test: Sloan letters and the C-ring direction test, with cone-isolating colors, clinic timing and scoring.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Barlow+Semi+Condensed:wght@500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
-/* Layout: one reading column for setup and results; the test itself runs full-screen on a computed gray field.
+/* Layout: one reading column (setup, start, results, progress); the test itself runs full-screen on a computed gray field.
    Deliberately dark-only: the clinic test is taken in a dark room, and a bright page would light-adapt the eyes. */
 :root {
   --ground: #101216;
   --panel: #16181d;
+  --raised: #1d2027;
   --rule: #272b33;
   --ink: #e6e8ec;
   --ink-2: #a4abb7;
@@ -28,22 +29,18 @@
   --font-display: "Barlow Semi Condensed", "Arial Narrow", Arial, sans-serif;
   --font-body: "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-data: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-  --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 24px; --s6: 32px; --s7: 48px;
+  --s2: 8px; --s3: 12px; --s4: 16px; --s5: 24px; --s6: 32px;
   color-scheme: dark;
 }
 [hidden] { display: none !important; }
 * { box-sizing: border-box; }
 html, body { background: var(--ground); color: var(--ink); }
-body {
-  margin: 0;
-  font: 16px/1.55 var(--font-body);
-  -webkit-font-smoothing: antialiased;
-}
+body { margin: 0; font: 16px/1.55 var(--font-body); -webkit-font-smoothing: antialiased; }
 a { color: var(--accent); }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
-.wrap { max-width: 760px; margin: 0 auto; padding-inline: 20px; padding-block: 28px 64px; display: grid; gap: var(--s6); }
-@media (max-width: 480px) { .wrap { padding-inline: 16px; } }
+.wrap { max-width: 780px; margin: 0 auto; padding-inline: 20px; padding-block: 28px 64px; display: grid; gap: 40px; }
+@media (max-width: 480px) { .wrap { padding-inline: 16px; gap: 32px; } }
 
 .eyebrow { font: 500 12px/1.3 var(--font-data); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); margin: 0; }
 h1 { font: 600 clamp(34px, 7vw, 48px)/1.02 var(--font-display); letter-spacing: .005em; margin: 6px 0 0; text-wrap: balance; }
@@ -54,6 +51,7 @@ p { margin: 0; max-width: 65ch; }
 .muted { color: var(--ink-2); }
 .small { font-size: 14px; }
 .mono { font-family: var(--font-data); font-variant-numeric: tabular-nums; }
+kbd { font: 12px var(--font-data); border: 1px solid var(--rule); border-bottom-width: 2px; border-radius: 4px; padding: 1px 5px; color: var(--ink); background: var(--raised); }
 
 header.hero { display: grid; gap: var(--s4); }
 .ladder-box { background: var(--panel); border: 1px solid var(--rule); border-radius: 10px; padding: var(--s3); display: grid; gap: var(--s2); }
@@ -61,22 +59,37 @@ header.hero { display: grid; gap: var(--s4); }
 .ladder-cap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--s2); font: 12px/1.4 var(--font-data); color: var(--ink-3); }
 
 section { display: grid; gap: var(--s4); }
-.panel { background: var(--panel); border: 1px solid var(--rule); border-radius: 10px; padding: var(--s5); display: grid; gap: var(--s5); }
+.panel { background: var(--panel); border: 1px solid var(--rule); border-radius: 10px; padding: var(--s5); display: grid; gap: var(--s5); min-width: 0; }
 @media (max-width: 480px) { .panel { padding: var(--s4); } }
+.sec-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: var(--s2); }
 
-.field { display: grid; gap: var(--s2); }
-.field > .label { font: 500 12px/1.3 var(--font-data); letter-spacing: .07em; text-transform: uppercase; color: var(--ink-3); }
-.seg { position: relative; display: flex; flex-wrap: wrap; gap: 6px; }
-.seg input { position: absolute; opacity: 0; pointer-events: none; }
-.seg label { border: 1px solid var(--rule); border-radius: 8px; padding: 9px 14px; cursor: pointer; color: var(--ink-2); background: transparent; font-size: 15px; line-height: 1.2; }
+/* Start panel */
+.step { display: grid; gap: 10px; }
+.step-label { display: flex; gap: 10px; align-items: baseline; font: 500 12px/1.3 var(--font-data); letter-spacing: .07em; text-transform: uppercase; color: var(--ink-3); }
+.step-label b { color: var(--ink-2); font-weight: 500; }
+.types { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+@media (max-width: 520px) { .types { grid-template-columns: 1fr; } }
+.types input, .seg input { position: absolute; opacity: 0; pointer-events: none; }
+.types, .seg { position: relative; }
+.type-card { display: grid; grid-template-columns: 64px 1fr; gap: 14px; align-items: center; border: 1px solid var(--rule); border-radius: 10px; padding: 12px; cursor: pointer; color: var(--ink-2); }
+.type-card canvas { width: 64px; height: 64px; border-radius: 6px; display: block; }
+.type-card strong { display: block; color: var(--ink); font-size: 16px; }
+.type-card span.sub { display: block; font: 12px/1.4 var(--font-data); color: var(--ink-3); margin-top: 2px; }
+.types input:checked + .type-card { border-color: var(--ink-2); background: var(--raised); }
+.types input:focus-visible + .type-card { outline: 2px solid var(--accent); outline-offset: 2px; }
+.seg { display: flex; flex-wrap: wrap; gap: 6px; }
+.seg label { border: 1px solid var(--rule); border-radius: 8px; padding: 9px 14px; cursor: pointer; color: var(--ink-2); font-size: 15px; line-height: 1.2; }
 .seg label small { display: block; font: 12px/1.3 var(--font-data); color: var(--ink-3); margin-top: 3px; }
-.seg input:checked + label { border-color: var(--ink-2); color: var(--ink); background: #1f232a; }
+.seg input:checked + label { border-color: var(--ink-2); color: var(--ink); background: var(--raised); }
 .seg input:focus-visible + label { outline: 2px solid var(--accent); outline-offset: 2px; }
 .row { display: flex; flex-wrap: wrap; gap: var(--s4); align-items: flex-end; }
 .check { display: flex; gap: 10px; align-items: flex-start; color: var(--ink-2); font-size: 15px; cursor: pointer; }
 .check input { width: 18px; height: 18px; margin: 2px 0 0; accent-color: var(--btn); flex: none; }
+.how-answer { font-size: 14px; color: var(--ink-2); display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; }
 input[type="number"], select { background: var(--ground); color: var(--ink); border: 1px solid var(--rule); border-radius: 8px; padding: 8px 10px; font: 15px var(--font-data); }
 input[type="number"] { width: 6.5em; }
+.field { display: grid; gap: 6px; }
+.field > .label { font: 500 12px/1.3 var(--font-data); letter-spacing: .07em; text-transform: uppercase; color: var(--ink-3); }
 
 .btn { appearance: none; border: 0; border-radius: 8px; background: var(--btn); color: var(--btn-ink); font: 700 16px/1 var(--font-body); padding: 14px 22px; cursor: pointer; }
 .btn:hover { background: #ffffff; }
@@ -84,29 +97,26 @@ input[type="number"] { width: 6.5em; }
 .btn.ghost:hover { border-color: var(--ink-3); }
 .btn.small { padding: 9px 14px; font-size: 14px; }
 .start-row { display: flex; flex-wrap: wrap; gap: var(--s3); align-items: center; }
-
-.status-line { display: flex; gap: var(--s2); align-items: baseline; font-size: 15px; color: var(--ink-2); }
-.status-line b { color: var(--ink); font-weight: 700; }
 .flag { font: 500 12px/1 var(--font-data); padding: 4px 7px; border-radius: 4px; border: 1px solid var(--rule); color: var(--ink-2); white-space: nowrap; }
 .flag.ok { border-color: var(--pass); color: var(--ink); }
 .flag.warn { border-color: var(--fail); color: var(--ink); }
+.status-line { display: flex; flex-wrap: wrap; gap: var(--s2); align-items: baseline; font-size: 14px; color: var(--ink-2); }
 
+/* Setup */
 .calib { display: grid; gap: var(--s3); }
 .card-stage { display: flex; justify-content: center; padding: var(--s3) 0; overflow: hidden; }
 #cardOutline { border: 2px dashed var(--ink-2); border-radius: 3.18mm; display: grid; place-items: center; color: var(--ink-3); font: 12px var(--font-data); text-align: center; padding: 8px; }
 input[type="range"] { width: 100%; accent-color: var(--btn); }
-
 .checklist { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
 .checklist li { display: grid; grid-template-columns: 20px 1fr; gap: 10px; color: var(--ink-2); font-size: 15px; }
 .checklist li::before { content: ""; width: 10px; height: 10px; margin-top: 7px; border: 1.5px solid var(--ink-3); border-radius: 2px; }
 .checklist b { color: var(--ink); }
 
 /* Results */
-.result-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: var(--s2); }
 .example-tag { font: 500 12px/1 var(--font-data); letter-spacing: .06em; text-transform: uppercase; color: var(--ink-2); border: 1px dashed var(--ink-3); padding: 5px 8px; border-radius: 4px; }
-.eye-block { display: grid; gap: var(--s3); }
+.eye-block { display: grid; gap: var(--s5); min-width: 0; }
 .eye-block + .eye-block { border-top: 1px solid var(--rule); padding-top: var(--s5); }
-.cone-row { display: grid; grid-template-columns: 112px 52px 1fr; grid-template-areas: "name score chip" "bar bar bar" "dots dots dots"; gap: 8px 12px; align-items: center; }
+.cone-row { display: grid; grid-template-columns: 112px 56px 1fr; grid-template-areas: "name score chip" "bar bar bar" "detail detail detail"; gap: 8px 12px; align-items: center; min-width: 0; }
 .cone-name { grid-area: name; display: flex; gap: 8px; align-items: center; font-weight: 700; }
 .swatch { width: 18px; height: 18px; border-radius: 3px; flex: none; display: grid; place-items: center; }
 .swatch i { width: 10px; height: 10px; border-radius: 50%; display: block; }
@@ -117,51 +127,86 @@ input[type="range"] { width: 100%; accent-color: var(--btn); }
 .chip.pass::before { content: "✓"; color: var(--pass); font-weight: 700; }
 .chip.fail { border-color: var(--fail); }
 .chip.fail::before { content: "✕"; color: var(--fail); font-weight: 700; }
-.bar { grid-area: bar; position: relative; height: 22px; }
+.chip.mid { border-color: var(--ink-3); border-style: dashed; }
+.chip.mid::before { content: "!"; color: var(--ink-2); font-weight: 700; }
+.bar { grid-area: bar; position: relative; height: 24px; }
 .bar .track { position: absolute; left: 0; right: 0; top: 4px; height: 6px; background: #22262d; border-radius: 3px; }
 .bar .fill { position: absolute; left: 0; top: 4px; height: 6px; background: var(--ink-2); border-radius: 3px; }
 .bar .tick { position: absolute; top: 0; width: 2px; height: 14px; background: var(--ink-3); }
-.bar .tick span { position: absolute; top: 14px; left: 50%; transform: translateX(-50%); font: 10px/1 var(--font-data); color: var(--ink-3); white-space: nowrap; }
-.dots { grid-area: dots; display: flex; flex-wrap: wrap; gap: 6px; align-items: flex-start; padding-top: 6px; }
+.bar .tick span { position: absolute; top: 15px; left: 50%; transform: translateX(-50%); font: 10px/1 var(--font-data); color: var(--ink-3); white-space: nowrap; }
+.detail { grid-area: detail; min-width: 0; display: grid; gap: 6px; }
+.dots { display: flex; flex-wrap: wrap; gap: 6px; align-items: flex-start; padding-top: 4px; }
 .pair { display: grid; gap: 3px; justify-items: center; }
 .pair .two { display: flex; gap: 3px; }
 .pair .lab { font: 10px/1 var(--font-data); color: var(--ink-3); min-height: 10px; white-space: nowrap; }
-.dot { width: 11px; height: 11px; border-radius: 50%; border: 1.5px solid var(--ink-2); background: transparent; cursor: default; }
+.dot { width: 11px; height: 11px; border-radius: 50%; border: 1.5px solid var(--ink-2); background: transparent; display: inline-block; }
 .dot.hit { background: var(--ink); border-color: var(--ink); }
 .dot.none { border-style: dotted; border-color: var(--ink-3); }
+.thr { font: 13px/1.4 var(--font-data); color: var(--ink-2); }
+svg.chart { width: 100%; height: auto; display: block; overflow: visible; }
+svg.chart text { font-family: var(--font-data); fill: var(--ink-3); font-size: 11px; }
+svg.chart .grid { stroke: var(--rule); stroke-width: 1; }
+svg.chart .ref { stroke: var(--ink-3); stroke-width: 1; stroke-dasharray: 4 4; }
+svg.chart .path { fill: none; stroke: var(--ink-3); stroke-width: 1.5; }
+svg.chart .pathR { fill: none; stroke: var(--ink); stroke-width: 2; }
+svg.chart .pathL { fill: none; stroke: var(--ink-2); stroke-width: 2; stroke-dasharray: 5 4; }
+svg.chart .pt-hit { fill: var(--ink); stroke: var(--panel); stroke-width: 2; }
+svg.chart .pt-miss { fill: var(--panel); stroke: var(--ink-2); stroke-width: 1.5; }
+svg.chart .pt-none { fill: var(--panel); stroke: var(--ink-3); stroke-width: 1.5; stroke-dasharray: 2 2; }
+svg.chart .thr-line { stroke: var(--ink-2); stroke-width: 1.5; stroke-dasharray: 6 4; }
+svg.chart .thr-text { fill: var(--ink-2); }
+svg.chart .hit-area { fill: transparent; }
 .legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 13px; color: var(--ink-3); align-items: center; }
-.legend span { display: inline-flex; gap: 6px; align-items: center; }
+.legend > span { display: inline-flex; gap: 6px; align-items: center; }
+.lg-line { width: 22px; height: 0; border-top: 2px solid var(--ink); display: inline-block; }
+.lg-line.dash { border-top: 2px dashed var(--ink-2); }
 .pattern-note { font-size: 15px; color: var(--ink-2); border-left: 2px solid var(--rule); padding-left: 12px; }
 #tip { position: fixed; z-index: 50; pointer-events: none; background: #0b0c0f; color: var(--ink); border: 1px solid var(--rule); border-radius: 6px; padding: 6px 9px; font: 12px/1.4 var(--font-data); max-width: 260px; }
-@media (max-width: 480px) { .cone-row { grid-template-columns: 1fr auto; grid-template-areas: "name score" "chip chip" "bar bar" "dots dots"; } }
+@media (max-width: 480px) { .cone-row { grid-template-columns: 1fr auto; grid-template-areas: "name score" "chip chip" "bar bar" "detail detail"; } }
+
+.trends { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+@media (max-width: 640px) { .trends { grid-template-columns: 1fr; } }
+.trend { display: grid; gap: 6px; min-width: 0; }
+.trend h4 { margin: 0; font: 700 14px var(--font-body); display: flex; gap: 8px; align-items: center; }
 
 .table-wrap { overflow-x: auto; }
 table { border-collapse: collapse; width: 100%; font: 14px/1.3 var(--font-data); font-variant-numeric: tabular-nums; }
 th, td { padding: 8px 10px; text-align: right; border-bottom: 1px solid var(--rule); white-space: nowrap; }
-th:first-child, td:first-child { text-align: left; }
+th:first-child, td:first-child, th:nth-child(2), td:nth-child(2) { text-align: left; }
 thead th { color: var(--ink-3); font-weight: 500; font-size: 12px; }
+tbody tr { cursor: pointer; }
+tbody tr:hover td { background: var(--raised); }
 td.low::before { content: "✕ "; color: var(--fail); }
 
 .facts { display: grid; gap: 10px; margin: 0; padding-left: 20px; color: var(--ink-2); }
 .facts b { color: var(--ink); }
+.compare { overflow-x: auto; }
+.compare table td, .compare table th { text-align: left; white-space: normal; font: 14px/1.4 var(--font-body); vertical-align: top; }
+.compare table th { font: 500 12px var(--font-data); color: var(--ink-3); }
+.compare table td:first-child { color: var(--ink-3); font: 13px/1.4 var(--font-data); white-space: nowrap; }
 .sources { font-size: 14px; color: var(--ink-3); display: grid; gap: 6px; }
 footer { color: var(--ink-3); font-size: 13px; }
 
 /* Test stage */
-#stage { position: fixed; inset: 0; z-index: 20; background: #777; overflow: hidden; touch-action: manipulation; user-select: none; -webkit-user-select: none; }
+#stage { position: fixed; inset: 0; z-index: 20; background: #777; overflow: hidden; touch-action: none; user-select: none; -webkit-user-select: none; }
 #cv { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
-#hud { position: absolute; left: 0; right: 0; top: 0; padding: calc(env(safe-area-inset-top, 0px) + 10px) 14px 0; display: flex; justify-content: space-between; align-items: center; font: 13px var(--font-data); color: rgba(0,0,0,.42); }
-#hud button { background: transparent; border: 1px solid rgba(0,0,0,.28); color: rgba(0,0,0,.55); border-radius: 6px; padding: 7px 11px; font: 13px var(--font-data); cursor: pointer; }
-#keypad { position: absolute; left: 0; right: 0; bottom: 0; padding: 0 12px calc(env(safe-area-inset-bottom, 0px) + 12px); display: grid; grid-template-columns: repeat(5, minmax(0, 72px)); justify-content: center; gap: 8px; }
-#keypad button { height: 52px; border-radius: 8px; border: 1px solid rgba(0,0,0,.25); background: rgba(0,0,0,.06); color: rgba(0,0,0,.6); font: 600 20px var(--font-data); cursor: pointer; }
+#hud { position: absolute; left: 0; right: 0; top: 0; padding: calc(env(safe-area-inset-top, 0px) + 10px) 14px 0; display: flex; justify-content: space-between; align-items: center; gap: 10px; font: 13px var(--font-data); color: rgba(0,0,0,.45); }
+#hud button { background: transparent; border: 1px solid rgba(0,0,0,.28); color: rgba(0,0,0,.6); border-radius: 6px; padding: 7px 11px; font: 13px var(--font-data); cursor: pointer; }
+#fb { position: absolute; left: 50%; transform: translateX(-50%); top: calc(env(safe-area-inset-top, 0px) + 52px); font: 600 16px var(--font-data); color: rgba(0,0,0,.62); white-space: nowrap; }
+#keypad { position: absolute; left: 0; right: 0; bottom: 0; padding: 0 12px calc(env(safe-area-inset-bottom, 0px) + 12px); display: grid; justify-content: center; gap: 8px; }
+#keypad.letters { grid-template-columns: repeat(5, minmax(0, 72px)); }
+#keypad.ring { grid-template-columns: repeat(3, 72px); grid-template-rows: repeat(3, 60px); }
+#keypad button { height: 52px; border-radius: 8px; border: 1px solid rgba(0,0,0,.25); background: rgba(0,0,0,.06); color: rgba(0,0,0,.62); font: 600 20px var(--font-data); cursor: pointer; }
+#keypad.ring button { height: 60px; font-size: 26px; }
+#keypad.ring button.small { font: 500 12px var(--font-data); }
 #keypad button.wide { grid-column: 1 / -1; height: 44px; font: 500 14px var(--font-data); }
 #keypad button.pressed { background: rgba(0,0,0,.2); }
-#card { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: min(440px, calc(100% - 32px)); background: #16181d; color: var(--ink); border-radius: 12px; padding: 24px; display: grid; gap: 14px; box-shadow: 0 10px 40px rgba(0,0,0,.35); }
+#card { touch-action: pan-y; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: min(460px, calc(100% - 32px)); max-height: calc(100% - 32px); overflow-y: auto; background: #16181d; color: var(--ink); border-radius: 12px; padding: 24px; display: grid; gap: 14px; box-shadow: 0 10px 40px rgba(0,0,0,.35); }
 #card .eye { font: 600 30px/1.05 var(--font-display); }
 #card .cover { font-size: 17px; }
 #card .meta { font: 13px/1.5 var(--font-data); color: var(--ink-2); }
 #card .actions { display: flex; flex-wrap: wrap; gap: 10px; }
-@media (prefers-reduced-motion: no-preference) { .btn, .seg label { transition: background .15s, border-color .15s; } }
+@media (prefers-reduced-motion: no-preference) { .btn, .seg label, .type-card { transition: background .15s, border-color .15s; } }
 </style>
 
 <div class="wrap" id="home">
@@ -170,63 +215,95 @@ footer { color: var(--ink-3); font-size: 13px; }
       <p class="eyebrow">Rabin Cone Contrast Test · practice at home</p>
       <h1>RCCT Practice Test</h1>
     </div>
-    <p class="lead">A practice copy of the cone contrast test used for FAA and military color vision screening. Each letter is computed to stimulate only one cone type, at the same fading contrast steps, timing and scoring as the clinic version.</p>
+    <p class="lead">Practice both versions of the cone contrast test used for FAA and military color vision screening: the letter version and the C-ring direction version. Every symbol is computed to stimulate only one cone type, with the same contrast range, timing and scoring as the clinic devices.</p>
     <div class="ladder-box">
-      <canvas id="ladder" height="150" aria-label="Preview of the 10 contrast levels for red, green and blue letters"></canvas>
-      <div class="ladder-cap"><span>Preview of all 10 levels per color, easiest on the left</span><span id="ladderSpace"></span></div>
+      <canvas id="ladder" height="150" aria-label="Preview of the contrast levels for red, green and blue symbols"></canvas>
+      <div class="ladder-cap"><span id="ladderCap">Preview of the 10 contrast levels per color, easiest on the left</span><span id="ladderSpace"></span></div>
     </div>
   </header>
 
   <section aria-labelledby="runH">
-    <h2 id="runH">Run a test</h2>
+    <h2 id="runH">Practice</h2>
     <div class="panel">
-      <div class="field">
-        <span class="label">Test</span>
-        <div class="seg" role="radiogroup">
-          <input type="radio" name="mode" id="modeFull" value="full" checked><label for="modeFull">Full test<small>both eyes · 120 letters · ~7 min</small></label>
-          <input type="radio" name="mode" id="modeEye" value="eye"><label for="modeEye">One eye<small>60 letters · ~3.5 min</small></label>
-          <input type="radio" name="mode" id="modeCone" value="cone"><label for="modeCone">One color<small>20 letters · ~1 min</small></label>
+      <div class="step">
+        <span class="step-label"><b>1</b> Which test did you take?</span>
+        <div class="types" role="radiogroup" aria-label="Test type">
+          <input type="radio" name="ttype" id="typeLetters" value="letters">
+          <label class="type-card" for="typeLetters"><canvas id="iconLetters" width="128" height="128" aria-hidden="true"></canvas><span><strong>Letters</strong><span class="sub">Rabin CCT (Innova, military version). Say or tap the letter.</span></span></label>
+          <input type="radio" name="ttype" id="typeRing" value="ring">
+          <label class="type-card" for="typeRing"><canvas id="iconRing" width="128" height="128" aria-hidden="true"></canvas><span><strong>C ring, direction</strong><span class="sub">ColorDx / Konan CCT-HD. Point to the gap in the ring.</span></span></label>
         </div>
       </div>
-      <div class="row" id="pickRow" hidden>
-        <div class="field" id="eyeField">
-          <span class="label">Eye</span>
-          <div class="seg">
-            <input type="radio" name="eye" id="eyeR" value="R" checked><label for="eyeR">Right</label>
-            <input type="radio" name="eye" id="eyeL" value="L"><label for="eyeL">Left</label>
+
+      <div class="step">
+        <span class="step-label"><b>2</b> How much?</span>
+        <div class="seg" role="radiogroup" aria-label="Test length">
+          <input type="radio" name="mode" id="modeFull" value="full"><label for="modeFull">Full test<small id="fullSub">both eyes · ~7 min</small></label>
+          <input type="radio" name="mode" id="modeEye" value="eye"><label for="modeEye">One eye<small id="eyeSub">3 colors · ~3.5 min</small></label>
+          <input type="radio" name="mode" id="modeCone" value="cone"><label for="modeCone">One color<small id="coneSub">~1 min</small></label>
+        </div>
+        <div class="row" id="pickRow" hidden>
+          <div class="field">
+            <span class="label">Eye</span>
+            <div class="seg">
+              <input type="radio" name="eye" id="eyeR" value="R"><label for="eyeR">Right</label>
+              <input type="radio" name="eye" id="eyeL" value="L"><label for="eyeL">Left</label>
+            </div>
+          </div>
+          <div class="field" id="coneField">
+            <span class="label">Color</span>
+            <div class="seg">
+              <input type="radio" name="cone" id="coneL" value="L"><label for="coneL">Red</label>
+              <input type="radio" name="cone" id="coneM" value="M"><label for="coneM">Green</label>
+              <input type="radio" name="cone" id="coneS" value="S"><label for="coneS">Blue</label>
+            </div>
           </div>
         </div>
-        <div class="field" id="coneField">
-          <span class="label">Color</span>
-          <div class="seg">
-            <input type="radio" name="cone" id="coneL" value="L"><label for="coneL">Red</label>
-            <input type="radio" name="cone" id="coneM" value="M" checked><label for="coneM">Green</label>
-            <input type="radio" name="cone" id="coneS" value="S"><label for="coneS">Blue</label>
-          </div>
-        </div>
       </div>
-      <div class="field">
-        <span class="label">Pacing</span>
-        <div class="seg">
-          <input type="radio" name="pace" id="paceTimed" value="timed" checked><label for="paceTimed">Timed, like the clinic<small>letter 1.0–1.6 s, then blank</small></label>
-          <input type="radio" name="pace" id="paceSelf" value="self"><label for="paceSelf">Self-paced<small>waits for each answer</small></label>
+
+      <div class="step">
+        <span class="step-label"><b>3</b> Exam or practice?</span>
+        <div class="seg" role="radiogroup" aria-label="Feedback">
+          <input type="radio" name="fb" id="fbExam" value="exam"><label for="fbExam">Exam<small>no hints, like the clinic</small></label>
+          <input type="radio" name="fb" id="fbPractice" value="practice"><label for="fbPractice">Practice<small>shows right or wrong after each one</small></label>
         </div>
+        <div class="seg" role="radiogroup" aria-label="Pacing">
+          <input type="radio" name="pace" id="paceTimed" value="timed"><label for="paceTimed">Timed<small id="timedSub">clinic time limits</small></label>
+          <input type="radio" name="pace" id="paceSelf" value="self"><label for="paceSelf">No time limit<small>waits for each answer</small></label>
+        </div>
+        <label class="check"><input type="checkbox" id="showKeys"><span id="showKeysText">Show answer buttons on screen.</span></label>
+        <p class="how-answer" id="howAnswer"></p>
       </div>
-      <label class="check"><input type="checkbox" id="showKeys" checked><span>Show letter buttons on screen. Turn this off if a partner types the letters you say out loud, which matches how the clinic runs it.</span></label>
+
       <div class="start-row">
         <button class="btn" id="startBtn">Start test</button>
-        <span class="status-line small" id="readyLine"></span>
+        <button class="btn ghost" id="demoBtn">Try a 6-symbol demo</button>
+        <button class="btn ghost" id="drillBtn" hidden></button>
       </div>
+      <div class="status-line" id="readyLine"></div>
     </div>
   </section>
 
   <section aria-labelledby="resH">
-    <div class="result-head"><h2 id="resH">Results</h2><span class="example-tag" id="exampleTag" hidden>Example result</span></div>
+    <div class="sec-head"><h2 id="resH">Results</h2><span class="example-tag" id="exampleTag" hidden>Example result</span></div>
     <div class="panel" id="resultPanel"></div>
-    <div class="panel" id="historyPanel" hidden>
-      <div class="result-head"><h3>Practice history</h3><button class="btn ghost small" id="clearBtn">Clear history</button></div>
+  </section>
+
+  <section aria-labelledby="progH" id="progSection" hidden>
+    <div class="sec-head"><h2 id="progH">Progress</h2>
+      <div class="seg" role="radiogroup" aria-label="Progress test type">
+        <input type="radio" name="ptype" id="ptLetters" value="letters" checked><label for="ptLetters">Letters</label>
+        <input type="radio" name="ptype" id="ptRing" value="ring"><label for="ptRing">C ring</label>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="legend"><span><span class="lg-line"></span>Right eye</span><span><span class="lg-line dash"></span>Left eye</span><span>Dashed gray line: FAA 55</span></div>
+      <div class="trends" id="trends"></div>
+      <h3>All practice runs</h3>
+      <p class="small muted">Tap a row to show its full results above.</p>
       <div class="table-wrap"><table id="histTable"></table></div>
-      <p class="small muted" id="clearConfirm" hidden>Delete all saved practice runs on this device? <button class="btn ghost small" id="clearYes">Delete</button> <button class="btn ghost small" id="clearNo">Keep</button></p>
+      <div class="start-row"><button class="btn ghost small" id="clearBtn">Clear history</button>
+        <span class="small muted" id="clearConfirm" hidden>Delete all saved runs on this device? <button class="btn ghost small" id="clearYes">Delete</button> <button class="btn ghost small" id="clearNo">Keep</button></span></div>
     </div>
   </section>
 
@@ -234,17 +311,18 @@ footer { color: var(--ink-3); font-size: 13px; }
     <h2 id="setH">Screen setup</h2>
     <div class="panel">
       <div class="calib">
-        <h3>1. Match a bank card to size the letters</h3>
-        <p class="small muted">Hold any credit, debit or ID card flat against the screen inside the outline. Drag the slider until the outline matches the card edges exactly.</p>
+        <h3>1. Match a bank card to size the symbols</h3>
+        <p class="small muted">Hold any credit, debit or ID card flat against the screen inside the outline. Drag the slider until the outline matches the card edges exactly. You only need to do this once per device.</p>
         <div class="card-stage"><div id="cardOutline">card</div></div>
         <input type="range" id="ppm" min="2" max="12" step="0.01" aria-label="Screen scale">
-        <div class="row"><button class="btn ghost small" id="saveCal">The outline matches my card</button><span class="status-line small" id="calLine"></span></div>
+        <div class="row"><button class="btn ghost small" id="saveCal">The outline matches my card</button><span class="status-line" id="calLine"></span></div>
       </div>
       <div class="field">
         <h3>2. Viewing distance</h3>
-        <p class="small muted">The clinic uses 36 inches. Any distance works because letter size scales to keep the same visual angle, so pick one you can repeat every time.</p>
+        <p class="small muted">The letter test is done at 36 inches. Published studies of the C-ring test used 60 cm, about 24 inches. Symbol size scales to keep the same visual angle, so any distance works. Pick one you can repeat every time.</p>
         <div class="row">
-          <label class="field"><span class="label">Distance</span><input type="number" id="dist" min="8" max="200" step="1" value="36"></label>
+          <label class="field"><span class="label">Letters</span><input type="number" id="distLetters" min="8" max="200" step="1"></label>
+          <label class="field"><span class="label">C ring</span><input type="number" id="distRing" min="8" max="200" step="1"></label>
           <label class="field"><span class="label">Unit</span><select id="distUnit"><option value="in">inches</option><option value="cm">cm</option></select></label>
         </div>
         <p class="small muted mono" id="sizeLine"></p>
@@ -253,10 +331,10 @@ footer { color: var(--ink-3); font-size: 13px; }
         <h3>3. Room and screen</h3>
         <ul class="checklist">
           <li><span><b>Turn off color filters:</b> Night Shift, True Tone, Night Light, f.lux, blue-light or dark-reader extensions. They shift the colors this page computes.</span></li>
-          <li><span><b>Dark room.</b> The clinic test is done with room lights off. Give your eyes a minute to settle.</span></li>
+          <li><span><b>Dark room.</b> Room lights off, as at the clinic. Give your eyes a minute to settle.</span></li>
           <li><span><b>Same brightness every time,</b> around the middle. Changing it between runs makes scores harder to compare.</span></li>
           <li><span><b>Cover one eye with your palm</b> without pressing on it. Wear your usual distance glasses or contacts, never tinted or color-correcting lenses.</span></li>
-          <li><span><b>Answer fast.</b> Each letter is gone in 1 to 1.6 seconds. If you are not sure, guess. A guess is right 1 time in 10 and a blank answer never is.</span></li>
+          <li><span><b>Answer fast and always guess.</b> A guess is right 1 time in 10 for letters and 1 time in 4 for the ring. A blank answer is never right.</span></li>
         </ul>
       </div>
       <p class="small muted" id="spaceLine"></p>
@@ -264,23 +342,35 @@ footer { color: var(--ink-3); font-size: 13px; }
   </section>
 
   <section aria-labelledby="howH">
-    <h2 id="howH">How the clinic test works</h2>
+    <h2 id="howH">How the clinic tests work</h2>
     <div class="panel">
+      <div class="compare">
+        <table>
+          <thead><tr><th></th><th>Letters (Rabin CCT)</th><th>C ring (ColorDx CCT-HD)</th></tr></thead>
+          <tbody>
+            <tr><td>Symbol</td><td>Sloan letters C D H K N O R S V Z inside a crosshair</td><td>A ring with a gap facing up, down, left or right</td></tr>
+            <tr><td>Answer</td><td>Read the letter aloud, or the tech enters it</td><td>Press the arrow that points to the gap, within 5 seconds</td></tr>
+            <tr><td>Order</td><td>Each eye alone: 20 red, then 20 green, then 20 blue</td><td>Each eye alone: red, green and blue</td></tr>
+            <tr><td>Contrast</td><td>Fixed fade: 10 steps of 0.16 log units, 2 letters each. Red and green 27.5% to 1%, blue 173% to about 6%</td><td>Adaptive: gets fainter after right answers and stronger after wrong ones, using a Bayesian method (Psi)</td></tr>
+            <tr><td>Timing</td><td>Each letter shows 1.0 to 1.6 s, then blank gray for the same time</td><td>Ring stays up to 5 s or until you answer</td></tr>
+            <tr><td>Score</td><td>Letters correct × 5, from 0 to 100. Normal is 75 or more</td><td>Threshold converted to the same Rabin scale, from 0 to 175. Studies use 75 as the normal cutoff, and some use 90</td></tr>
+          </tbody>
+        </table>
+      </div>
       <ul class="facts">
-        <li>Each eye is tested on its own, in a dark room, at 36 inches.</li>
-        <li>You see 20 <b>red</b> letters (L-cone), then 20 <b>green</b> (M-cone), then 20 <b>blue</b> (S-cone). Each letter sits inside a crosshair on a gray screen.</li>
-        <li>The letters fade in 10 steps of 0.16 log units, two letters per step. Red and green go from 27.5% down to 1% cone contrast. Blue goes from 173% down to about 6–7%.</li>
-        <li>Each letter shows for 1.0 to 1.6 seconds, longer as it gets fainter, followed by blank gray for the same time.</li>
-        <li>Score per color is letters correct × 5, so 0 to 100. <b>75 or more is normal.</b> The FAA accepts the military version at <b>55 or more in each color.</b></li>
+        <li>The FAA lists the military version of the Rabin test with a pass of <b>55 or more in each color</b>, and says a staircase version is allowed.</li>
+        <li>The FAA does not accept color-correcting lenses such as X-Chrom or EnChroma for testing.</li>
       </ul>
       <h3>What practice can and cannot change</h3>
-      <p class="muted">Practice cannot change how the cones respond. On a properly run clinic test, the score mostly reflects actual color vision. What practice can fix are avoidable misses: hesitating past the short window, not guessing, losing focus on the fainter letters, or being surprised by the format. A practice score here can differ from a clinic score by a few letters, because home screens are not calibrated.</p>
-      <p class="muted">The FAA does not accept color-correcting lenses such as X-Chrom or EnChroma for testing.</p>
+      <p class="muted">Practice cannot change how the cones respond. On a properly run clinic test, the score mostly reflects actual color vision. What practice can fix are avoidable misses: hesitating past the time limit, not guessing, losing focus on faint symbols, or being surprised by the format.</p>
+      <p class="muted">Practice scores can differ from clinic scores by a few points, because home screens are not calibrated. The C-ring practice uses its own adaptive method modeled on the published description, so treat its score as a close estimate, not a copy of the device.</p>
       <div class="sources">
         <span>Sources</span>
         <a href="https://pubmed.ncbi.nlm.nih.gov/21051721/" target="_blank" rel="noopener">Rabin, Gooch &amp; Ivan (2011). Rapid quantification of color vision: the cone contrast test. Invest Ophthalmol Vis Sci 52:816–820.</a>
         <a href="https://www.faa.gov/ame_guide/app_process/exam_tech/item52/et" target="_blank" rel="noopener">FAA Guide for Aviation Medical Examiners, Item 52: acceptable color vision tests.</a>
-        <a href="https://www.aopa.org/go-fly/medical-resources/health-conditions/vision/types-of-color-vision-tests" target="_blank" rel="noopener">AOPA: Types of color vision tests.</a>
+        <a href="https://apps.dtic.mil/sti/trecms/pdf/AD1154166.pdf" target="_blank" rel="noopener">AFRL-RH-WP-TR-2019-0122: Comparison of cone contrast tests for color vision screening.</a>
+        <a href="https://link.springer.com/article/10.1186/s40942-023-00442-3" target="_blank" rel="noopener">Quantitative cone contrast threshold testing in retinal diseases (ColorDx CCT-HD methods).</a>
+        <a href="https://www.researchgate.net/publication/368972059_Cone_contrast_test-HD_sensitivity_and_specificity_in_red-green_dichromacy_and_the_impact_of_age" target="_blank" rel="noopener">Cone contrast test-HD: sensitivity and specificity in red–green dichromacy (ring size and distance).</a>
       </div>
     </div>
   </section>
@@ -291,6 +381,7 @@ footer { color: var(--ink-3); font-size: 13px; }
 <div id="stage" hidden>
   <canvas id="cv"></canvas>
   <div id="hud"><span id="hudText"></span><button id="stopBtn" type="button">Stop · Esc</button></div>
+  <div id="fb" aria-live="polite"></div>
   <div id="keypad" hidden></div>
   <div id="card" hidden></div>
 </div>
@@ -299,38 +390,43 @@ footer { color: var(--ink-3); font-size: 13px; }
 <script>
 'use strict';
 /* =====================================================================
-   1. Test constants (Rabin, Gooch & Ivan 2011; FAA AME Guide Item 52)
+   1. Test constants
+   Letters: Rabin, Gooch & Ivan 2011. C ring: published ColorDx CCT-HD methods.
    ===================================================================== */
 const LETTERS = ['C', 'D', 'H', 'K', 'N', 'O', 'R', 'S', 'V', 'Z']; // Sloan letters
+const DIRS = ['up', 'right', 'down', 'left'];                        // ring gap directions
+const ARROW = { up: '↑', right: '→', down: '↓', left: '←' };
 const CONES = {
   L: { idx: 0, label: 'Red',   cone: 'L-cone', c0: 0.275, acuity: 330 }, // 20/330 letters
   M: { idx: 1, label: 'Green', cone: 'M-cone', c0: 0.275, acuity: 330 },
   S: { idx: 2, label: 'Blue',  cone: 'S-cone', c0: 1.73,  acuity: 440 }, // 20/440 letters
 };
 const CONE_ORDER = ['L', 'M', 'S'];
-const LEVELS = 10, PER_LEVEL = 2, STEP_LOG = 0.16;   // 10 steps x 2 letters = 20 letters
-const N_TRIALS = LEVELS * PER_LEVEL;
-const PASS_FAA = 55, NORMAL = 75;
+const LEVELS = 10, PER_LEVEL = 2, STEP_LOG = 0.16;   // letters: 10 steps x 2 letters = 20
+const N_LETTERS = LEVELS * PER_LEVEL;
+const N_RING = 20;                                   // ring trials per color (adaptive)
+const RING_LIMIT_MS = 5000;                          // answer window for the ring
+const RING_DEG = 2 * Math.atan(6.5 / 600) * 180 / Math.PI; // 13 mm ring (2.6 mm gap) at 60 cm = 1.24 deg
+const PASS_FAA = 55, NORMAL = 75, RING_NORMAL = 90, RING_MAX = 175;
 const EYE_NAME = { R: 'Right eye', L: 'Left eye' };
 const OTHER_EYE = { R: 'left', L: 'right' };
+const TYPE_NAME = { letters: 'Letters', ring: 'C ring' };
 
-// Cone contrast at a level: start contrast, divided by 10^0.16 per step.
 const contrastAt = (cone, level) => CONES[cone].c0 * Math.pow(10, -STEP_LOG * level);
-// Display time grows from 1.0 s (brightest) to 1.6 s (faintest).
-const durationAt = level => 1000 + 600 * level / (LEVELS - 1);
+const durationAt = level => 1000 + 600 * level / (LEVELS - 1);   // 1.0 s to 1.6 s
+// Rabin scale: each 0.16 log step of threshold below the start contrast = 10 points; threshold at the start = 10.
+const ringScore = (cone, T) => Math.max(0, Math.min(RING_MAX, Math.round(10 * (Math.log10(CONES[cone].c0 / T) / STEP_LOG + 1))));
 
 /* =====================================================================
-   2. Color science: build cone-isolating colors for this display
+   2. Color science: cone-isolating colors for this display
    ===================================================================== */
-// Linear RGB -> CIE XYZ (D65 white) for the two color spaces a browser canvas can use.
 const RGB2XYZ = {
   'srgb':       [[0.4124564, 0.3575761, 0.1804375], [0.2126729, 0.7151522, 0.0721750], [0.0193339, 0.1191920, 0.9503041]],
   'display-p3': [[0.4865709, 0.2656677, 0.1982173], [0.2289746, 0.6917385, 0.0792869], [0.0,       0.0451134, 1.0439444]],
 };
 // CIE XYZ -> cone excitations (Smith & Pokorny 1975 fundamentals).
 const XYZ2LMS = [[0.15514, 0.54312, -0.03286], [-0.15514, 0.45684, 0.03286], [0, 0, 0.00801]];
-// Background gray: chromaticity used by Rabin et al. (x 0.299, y 0.300). Luminance is 20% of screen white,
-// the brightest level that still leaves room for the 173% blue letters.
+// Background gray: chromaticity used by Rabin et al. (x 0.299, y 0.300), 20% of screen white.
 const BG = { x: 0.299, y: 0.300, Y: 0.20 };
 
 const mul3 = (A, B) => A.map(r => [0, 1, 2].map(j => r[0] * B[0][j] + r[1] * B[1][j] + r[2] * B[2][j]));
@@ -343,23 +439,19 @@ function inv3(m) {
           [B / det, (a * i - c * g) / det, -(a * f - c * d) / det],
           [C / det, -(a * h - b * g) / det, (a * e - b * d) / det]];
 }
-// sRGB and Display P3 share this transfer curve.
 const dec = c => c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
 const enc = l => l <= 0.0031308 ? 12.92 * l : 1.055 * Math.pow(l, 1 / 2.4) - 0.055;
 
 function makeEngine(space) {
   const toXYZ = RGB2XYZ[space];
-  const M = mul3(XYZ2LMS, toXYZ);           // linear RGB -> LMS
+  const M = mul3(XYZ2LMS, toXYZ);
   const Minv = inv3(M);
   const xyz = [BG.x / BG.y * BG.Y, BG.Y, (1 - BG.x - BG.y) / BG.y * BG.Y];
   const lin0 = mulv(inv3(toXYZ), xyz);
-  // Snap the background to exact 8-bit codes, then treat that exact gray as the reference.
   const bgCode = lin0.map(v => Math.round(enc(Math.min(1, Math.max(0, v))) * 255));
   const bgLin = bgCode.map(c => dec(c / 255));
   const bgLMS = mulv(M, bgLin);
-  // RGB change per unit contrast for each cone: only that cone's excitation changes.
   const dirs = [0, 1, 2].map(i => { const d = [0, 0, 0]; d[i] = bgLMS[i]; return mulv(Minv, d); });
-  // Largest contrast that stays inside the display gamut.
   const cmax = dirs.map(v => {
     let m = Infinity;
     for (let k = 0; k < 3; k++) {
@@ -374,7 +466,6 @@ function makeEngine(space) {
   }
   return { space, M, bgCode, bgLin, bgLMS, dirs, cmax, stim };
 }
-
 function pickSpace() {
   try {
     if (!matchMedia('(color-gamut: p3)').matches) return 'srgb';
@@ -384,12 +475,13 @@ function pickSpace() {
   return 'srgb';
 }
 const engine = makeEngine(pickSpace());
+const srgbEngine = makeEngine('srgb');
 const ctxOpts = engine.space === 'display-p3' ? { colorSpace: 'display-p3' } : {};
 const newImage = (ctx, w, h) => engine.space === 'display-p3' ? ctx.createImageData(w, h, { colorSpace: 'display-p3' }) : ctx.createImageData(w, h);
 const bgCss = `rgb(${engine.bgCode.join(',')})`;
 
 /* =====================================================================
-   3. Sloan letters drawn on a 5 x 5 grid with stroke width 1 (as in Sloan optotypes)
+   3. Symbols: Sloan letters (5x5 grid, stroke 1) and the Landolt C (stroke and gap = 1/5 of diameter)
    ===================================================================== */
 function drawSloan(ctx, ch, x, y, h) {
   const u = h / 5;
@@ -418,30 +510,45 @@ function drawSloan(ctx, ch, x, y, h) {
   }
   ctx.restore();
 }
+// Landolt C: outer diameter D, ring thickness D/5, gap height D/5, gap facing `dir`.
+function drawLandolt(ctx, dir, cx, cy, D) {
+  const rot = { right: 0, down: Math.PI / 2, left: Math.PI, up: -Math.PI / 2 }[dir];
+  ctx.save();
+  ctx.translate(cx, cy); ctx.rotate(rot);
+  ctx.fillStyle = '#fff';
+  ctx.beginPath();
+  ctx.arc(0, 0, D / 2, 0, 2 * Math.PI);
+  ctx.arc(0, 0, D * 0.3, 0, 2 * Math.PI, true);
+  ctx.fill('evenodd');
+  ctx.globalCompositeOperation = 'destination-out';
+  ctx.fillRect(0, -D / 10, D / 2 + 2, D / 5);                 // the gap, pointing along +x before rotation
+  ctx.restore();
+}
 
-// Anti-aliased letter mask (0-255 coverage) for a box of B x B device pixels.
+// Anti-aliased coverage mask (0-255) for a symbol in a B x B box. Symbol ids: "L:K" (letter) or "C:up" (ring).
 const maskCache = new Map();
-function letterMask(ch, h, B) {
-  const key = ch + '|' + h + '|' + B;
+function symbolMask(sym, size, B) {
+  const key = sym + '|' + size + '|' + B;
   if (maskCache.has(key)) return maskCache.get(key);
   const c = document.createElement('canvas'); c.width = c.height = B;
   const x = c.getContext('2d', { willReadFrequently: true });
-  drawSloan(x, ch, (B - h) / 2, (B - h) / 2, h);
+  const [kind, val] = sym.split(':');
+  if (kind === 'L') drawSloan(x, val, (B - size) / 2, (B - size) / 2, size);
+  else drawLandolt(x, val, B / 2, B / 2, size);
   const px = x.getImageData(0, 0, B, B).data;
   const m = new Uint8Array(B * B);
   for (let i = 0; i < m.length; i++) m[i] = px[i * 4 + 3];
-  if (maskCache.size > 80) maskCache.clear();
+  if (maskCache.size > 120) maskCache.clear();
   maskCache.set(key, m);
   return m;
 }
-
-// Build the letter image. Blending happens in linear light, then each channel gets
-// sub-step random dithering ("noisy-bit") so contrasts smaller than one 8-bit step still average out correctly.
-function stimImage(ctx, ch, h, B, coneKey, contrast) {
-  const { eff, clipped, delta } = engine.stim(CONES[coneKey].idx, contrast);
-  const m = letterMask(ch, h, B);
-  const img = newImage(ctx, B, B), d = img.data;
-  const bl = engine.bgLin, bc = engine.bgCode;
+// Blend in linear light, then add sub-step random dithering ("noisy-bit") so faint contrasts average out exactly.
+function stimImage(ctx, sym, size, B, coneKey, contrast, eng) {
+  eng = eng || engine;
+  const { eff, clipped, delta } = eng.stim(CONES[coneKey].idx, contrast);
+  const m = symbolMask(sym, size, B);
+  const img = eng === engine ? newImage(ctx, B, B) : ctx.createImageData(B, B), d = img.data;
+  const bl = eng.bgLin, bc = eng.bgCode;
   const full = [0, 1, 2].map(k => enc(bl[k] + delta[k]) * 255);
   for (let p = 0, q = 0; p < m.length; p++, q += 4) {
     const a = m[p];
@@ -463,34 +570,84 @@ function solidImage(ctx, w, h) {
   for (let q = 0; q < d.length; q += 4) { d[q] = bc[0]; d[q + 1] = bc[1]; d[q + 2] = bc[2]; d[q + 3] = 255; }
   return img;
 }
-// A swatch color for the page UI (the top-level letter color, sRGB).
 function swatchCss(coneKey) {
-  const e = makeEngine('srgb');
-  const { delta } = e.stim(CONES[coneKey].idx, CONES[coneKey].c0);
-  return 'rgb(' + [0, 1, 2].map(k => Math.round(enc(e.bgLin[k] + delta[k]) * 255)).join(',') + ')';
+  const { delta } = srgbEngine.stim(CONES[coneKey].idx, CONES[coneKey].c0);
+  return 'rgb(' + [0, 1, 2].map(k => Math.round(enc(srgbEngine.bgLin[k] + delta[k]) * 255)).join(',') + ')';
 }
 
 /* =====================================================================
-   4. Settings and storage (per-device only)
+   4. Adaptive threshold for the ring: Psi-marginal method (Kontsevich & Tyler 1999; Prins 2013)
+      4 choices, so guessing is right 25% of the time. Threshold is estimated in log10 contrast.
+   ===================================================================== */
+const linspace = (a, b, n) => Array.from({ length: n }, (_, i) => a + (b - a) * i / (n - 1));
+class Psi {
+  constructor(cone, eng) {
+    eng = eng || engine;
+    const S = cone === 'S';
+    this.alphas = linspace(Math.log10(S ? 0.003 : 0.0003), Math.log10(S ? 6 : 1.5), 81);
+    this.betas = [1.5, 2.5, 4];                       // Weibull slopes (nuisance, marginalized out)
+    this.gamma = 0.25; this.lambda = 0.03;            // guess rate, lapse rate
+    const top = Math.min(eng.cmax[CONES[cone].idx], S ? 2.5 : 0.6);
+    this.xs = linspace(Math.log10(S ? 0.006 : 0.0006), Math.log10(top), 40);
+    const nA = this.alphas.length, nB = this.betas.length;
+    this.post = new Float64Array(nA * nB).fill(1 / (nA * nB));
+    this.P = this.xs.map(x => {
+      const row = new Float64Array(nA * nB);
+      for (let a = 0; a < nA; a++) for (let b = 0; b < nB; b++)
+        row[a * nB + b] = this.gamma + (1 - this.gamma - this.lambda) * (1 - Math.exp(-Math.pow(10, this.betas[b] * (x - this.alphas[a]))));
+      return row;
+    });
+  }
+  static H(m) { let s = 0, h = 0; for (const v of m) s += v; if (s <= 0) return 0; for (const v of m) if (v > 0) { const p = v / s; h -= p * Math.log(p); } return h; }
+  next() {
+    const nA = this.alphas.length, nB = this.betas.length, post = this.post;
+    let best = 0, bestH = Infinity;
+    const mc = new Float64Array(nA), mi = new Float64Array(nA);
+    this.P.forEach((row, xi) => {
+      mc.fill(0); mi.fill(0); let pc = 0;
+      for (let a = 0; a < nA; a++) for (let b = 0; b < nB; b++) {
+        const i = a * nB + b, w = post[i] * row[i];
+        mc[a] += w; mi[a] += post[i] - w; pc += w;
+      }
+      const h = pc * Psi.H(mc) + (1 - pc) * Psi.H(mi);
+      if (h < bestH) { bestH = h; best = xi; }
+    });
+    return best;
+  }
+  update(xi, correct) {
+    const row = this.P[xi]; let s = 0;
+    for (let i = 0; i < this.post.length; i++) { this.post[i] *= correct ? row[i] : 1 - row[i]; s += this.post[i]; }
+    for (let i = 0; i < this.post.length; i++) this.post[i] /= s;
+  }
+  estimate() {                                        // posterior mean of threshold (log10 contrast)
+    const nB = this.betas.length; let m = 0;
+    this.alphas.forEach((a, ai) => { let w = 0; for (let b = 0; b < nB; b++) w += this.post[ai * nB + b]; m += w * a; });
+    return m;
+  }
+}
+
+/* =====================================================================
+   5. Settings and storage (this device only)
    ===================================================================== */
 const store = {
   get(k, f) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : f; } catch (e) { return f; } },
   set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* storage blocked */ } },
 };
-const settings = Object.assign({ ppm: 96 / 25.4, calibrated: false, dist: 36, unit: 'in', showKeys: true, mode: 'full', pace: 'timed', eye: 'R', cone: 'M' },
-  store.get('rcct.settings', {}));
+const settings = Object.assign({ ppm: 96 / 25.4, calibrated: false, unit: 'in', distMM: { letters: 914.4, ring: 609.6 },
+  showKeys: true, type: 'letters', mode: 'full', pace: 'timed', fb: 'exam', eye: 'R', cone: 'M' }, store.get('rcct.settings', {}));
+if (typeof settings.distMM !== 'object') settings.distMM = { letters: 914.4, ring: 609.6 };
 let history = store.get('rcct.history', []);
+history.forEach(s => { if (!s.type) s.type = 'letters'; });
 const saveSettings = () => store.set('rcct.settings', settings);
 
 const $ = id => document.getElementById(id);
-const distMM = () => settings.unit === 'cm' ? settings.dist * 10 : settings.dist * 25.4;
-function letterMM(coneKey) {
-  const arcmin = 5 * CONES[coneKey].acuity / 20;        // Snellen 20/X letter = 5 arcmin x X/20
-  return 2 * distMM() * Math.tan((arcmin / 60) * Math.PI / 360);
-}
+const toUnit = mm => settings.unit === 'cm' ? mm / 10 : mm / 25.4;
+const fromUnit = v => settings.unit === 'cm' ? v * 10 : v * 25.4;
+const sizeAt = (deg, distMM) => 2 * distMM * Math.tan(deg * Math.PI / 360);
+const letterDeg = cone => 5 * CONES[cone].acuity / 20 / 60;      // Snellen 20/X letter = 5 arcmin x X/20
 
 /* =====================================================================
-   5. Home page UI
+   6. Practice panel UI
    ===================================================================== */
 function bindSeg(name, key, after) {
   document.querySelectorAll(`input[name="${name}"]`).forEach(r => {
@@ -498,23 +655,67 @@ function bindSeg(name, key, after) {
     r.addEventListener('change', () => { settings[key] = r.value; saveSettings(); after && after(); });
   });
 }
-function syncPick() {
+function syncPanel() {
+  const ring = settings.type === 'ring';
   $('pickRow').hidden = settings.mode === 'full';
   $('coneField').hidden = settings.mode !== 'cone';
+  $('fullSub').textContent = ring ? 'both eyes · 120 rings · ~6 min' : 'both eyes · 120 letters · ~7 min';
+  $('eyeSub').textContent = ring ? '60 rings · ~3 min' : '60 letters · ~3.5 min';
+  $('coneSub').textContent = ring ? '20 rings · ~1 min' : '20 letters · ~1 min';
+  $('timedSub').textContent = ring ? 'answer within 5 seconds' : 'letter 1.0–1.6 s, then blank';
+  $('showKeysText').textContent = ring
+    ? 'Show arrow buttons on screen. You can also swipe toward the gap.'
+    : 'Show letter buttons on screen. Turn this off if a partner types the letters you say out loud, like the clinic.';
+  $('howAnswer').innerHTML = ring
+    ? 'Keyboard: <kbd>↑</kbd><kbd>→</kbd><kbd>↓</kbd><kbd>←</kbd> point to the gap · <kbd>Space</kbd> can\'t see · <kbd>Esc</kbd> stop'
+    : 'Keyboard: type the letter · <kbd>Space</kbd> can\'t see · <kbd>Esc</kbd> stop';
+  $('startBtn').textContent = `Start ${ring ? 'C-ring' : 'letter'} test`;
+  updateDrill();
+  drawLadder();
 }
-bindSeg('mode', 'mode', syncPick);
+bindSeg('ttype', 'type', () => { syncPanel(); renderLatest(); });
+bindSeg('mode', 'mode', syncPanel);
 bindSeg('eye', 'eye');
 bindSeg('cone', 'cone');
 bindSeg('pace', 'pace');
-syncPick();
+bindSeg('fb', 'fb');
 $('showKeys').checked = settings.showKeys;
 $('showKeys').addEventListener('change', e => { settings.showKeys = e.target.checked; saveSettings(); });
 
+// Quick drill: repeat the weakest color from the most recent run, with feedback on.
+function weakest() {
+  const last = history.find(s => s.type === settings.type);
+  if (!last) return null;
+  let low = null;
+  last.blocks.forEach(b => { if (!low || b.score < low.score) low = b; });
+  return low && low.score < (settings.type === 'ring' ? RING_NORMAL : NORMAL) ? low : null;
+}
+function updateDrill() {
+  const w = weakest();
+  $('drillBtn').hidden = !w;
+  if (w) $('drillBtn').textContent = `Drill ${CONES[w.cone].label.toLowerCase()}, ${EYE_NAME[w.eye].toLowerCase()} (lowest last time)`;
+}
+$('drillBtn').addEventListener('click', () => {
+  const w = weakest(); if (!w) return;
+  start({ mode: 'cone', eye: w.eye, cone: w.cone, fb: 'practice' });
+});
+
+// Type icons drawn with the real cone-isolating colors.
+function drawIcons() {
+  [['iconLetters', 'L:R', 'L'], ['iconRing', 'C:right', 'M']].forEach(([id, sym, cone]) => {
+    const cv = $(id), ctx = cv.getContext('2d', ctxOpts);
+    ctx.putImageData(solidImage(ctx, cv.width, cv.height), 0, 0);
+    const { img } = stimImage(ctx, sym, 76, 112, cone, CONES[cone].c0);
+    ctx.putImageData(img, 8, 8);
+  });
+}
+
+// Screen setup
 function updateCard() {
   const box = $('cardOutline');
   const avail = box.parentElement.clientWidth - 8;
   let w = 85.6, h = 53.98;                               // ISO/IEC 7810 ID-1 card
-  if (w * settings.ppm > avail) { [w, h] = [h, w]; }      // turn it upright on narrow screens
+  if (w * settings.ppm > avail) { [w, h] = [h, w]; }
   box.style.width = (w * settings.ppm) + 'px';
   box.style.height = (h * settings.ppm) + 'px';
   box.textContent = w > h ? 'card, long edge across' : 'card, standing upright';
@@ -522,37 +723,38 @@ function updateCard() {
 $('ppm').value = settings.ppm;
 $('ppm').addEventListener('input', e => { settings.ppm = +e.target.value; settings.calibrated = false; saveSettings(); updateCard(); updateLines(); });
 $('saveCal').addEventListener('click', () => { settings.calibrated = true; saveSettings(); updateLines(); });
-$('dist').value = settings.dist; $('distUnit').value = settings.unit;
-$('dist').addEventListener('input', e => { const v = +e.target.value; if (v >= 8 && v <= 200) { settings.dist = v; saveSettings(); updateLines(); } });
-$('distUnit').addEventListener('change', e => {
-  const mm = distMM(); settings.unit = e.target.value;
-  settings.dist = Math.round(settings.unit === 'cm' ? mm / 10 : mm / 25.4);
-  $('dist').value = settings.dist; saveSettings(); updateLines();
-});
+function showDist() {
+  $('distUnit').value = settings.unit;
+  $('distLetters').value = Math.round(toUnit(settings.distMM.letters));
+  $('distRing').value = Math.round(toUnit(settings.distMM.ring));
+}
+[['distLetters', 'letters'], ['distRing', 'ring']].forEach(([id, t]) => $(id).addEventListener('input', e => {
+  const v = +e.target.value; const mm = fromUnit(v);
+  if (mm >= 200 && mm <= 5000) { settings.distMM[t] = mm; saveSettings(); updateLines(); }
+}));
+$('distUnit').addEventListener('change', e => { settings.unit = e.target.value; saveSettings(); showDist(); updateLines(); });
 
 function updateLines() {
-  $('calLine').innerHTML = settings.calibrated ? '<span class="flag ok">Saved</span> Letter sizes are set for this screen.' : '<span class="flag warn">Not saved</span> Letters may be the wrong size until you match the card.';
-  const lm = letterMM('L'), sm = letterMM('S');
-  $('sizeLine').textContent = `Letter height at this distance: red and green ${lm.toFixed(1)} mm, blue ${sm.toFixed(1)} mm (20/330 and 20/440).`;
+  $('calLine').innerHTML = settings.calibrated ? '<span class="flag ok">Saved</span> Symbol sizes are set for this screen.' : '<span class="flag warn">Not saved</span> Symbols may be the wrong size until you match the card.';
+  const dl = settings.distMM.letters, dr = settings.distMM.ring;
+  $('sizeLine').textContent = `Letters: red and green ${sizeAt(letterDeg('L'), dl).toFixed(1)} mm tall, blue ${sizeAt(letterDeg('S'), dl).toFixed(1)} mm. Ring: ${sizeAt(RING_DEG, dr).toFixed(1)} mm across with a ${(sizeAt(RING_DEG, dr) / 5).toFixed(1)} mm gap.`;
   const clipped = CONE_ORDER.filter(k => engine.cmax[CONES[k].idx] < CONES[k].c0);
   let txt = engine.space === 'display-p3'
     ? 'This screen supports wide color (Display P3), so every contrast level is shown exactly.'
     : 'This screen is using standard color (sRGB).';
-  if (clipped.length) {
-    txt += ' ' + clipped.map(k => `The first ${CONES[k].label.toLowerCase()} level is capped at ${(engine.cmax[CONES[k].idx] * 100).toFixed(0)}% instead of ${(CONES[k].c0 * 100).toFixed(1)}%. Only the two easiest letters are affected.`).join(' ');
-  }
-  txt += ' Faint letters use fine pixel dithering so contrasts below one color step still display correctly.';
+  if (clipped.length) txt += ' ' + clipped.map(k => `The strongest ${CONES[k].label.toLowerCase()} contrast is capped at ${(engine.cmax[CONES[k].idx] * 100).toFixed(0)}% instead of ${(CONES[k].c0 * 100).toFixed(1)}%, which only affects the two easiest letters.`).join(' ');
+  txt += ' Faint symbols use fine pixel dithering so contrasts below one color step still display correctly.';
   $('spaceLine').textContent = txt;
   $('ladderSpace').textContent = engine.space === 'display-p3' ? 'Display P3' : 'sRGB';
-  $('readyLine').innerHTML = settings.calibrated ? '' : '<span class="flag warn">Size not set</span> Match a card in Screen setup first for correct letter size.';
+  $('readyLine').innerHTML = settings.calibrated ? '' : '<span class="flag warn">Size not set</span> Match a card in Screen setup below so the symbols are the right size.';
 }
-window.addEventListener('resize', () => { updateCard(); drawLadder(); });
 
-// Preview ladder: 3 rows x 10 levels, real contrasts, small letters.
+// Preview ladder: 3 rows x 10 levels at the real contrasts, small symbols.
 function drawLadder() {
   const cv = $('ladder');
   const dpr = Math.min(window.devicePixelRatio || 1, 3);
-  const cssW = cv.clientWidth, cssH = Math.max(120, Math.min(170, cssW * 0.3));
+  const cssW = cv.clientWidth; if (!cssW) return;
+  const cssH = Math.max(120, Math.min(170, cssW * 0.3));
   cv.style.height = cssH + 'px';
   cv.width = Math.round(cssW * dpr); cv.height = Math.round(cssH * dpr);
   const ctx = cv.getContext('2d', ctxOpts);
@@ -561,19 +763,26 @@ function drawLadder() {
   const h = Math.round(Math.min(rowH * 0.62, colW * 0.62));
   const B = Math.round(h * 1.15);
   const seq = ['K', 'R', 'Z', 'D', 'N', 'S', 'H', 'V', 'C', 'O'];
+  const ring = settings.type === 'ring';
   CONE_ORDER.forEach((k, r) => {
     for (let lv = 0; lv < LEVELS; lv++) {
-      const { img } = stimImage(ctx, seq[(lv + r * 3) % 10], h, B, k, contrastAt(k, lv));
+      const sym = ring ? 'C:' + DIRS[(lv + r) % 4] : 'L:' + seq[(lv + r * 3) % 10];
+      const { img } = stimImage(ctx, sym, h, B, k, contrastAt(k, lv));
       ctx.putImageData(img, Math.round(colW * lv + (colW - B) / 2), Math.round(rowH * r + (rowH - B) / 2));
     }
   });
+  $('ladderCap').textContent = ring
+    ? 'Ring preview at the same 10 contrast levels. The real ring test adapts to your answers.'
+    : 'Preview of the 10 contrast levels per color, easiest on the left';
 }
+let resizeT = null;
+window.addEventListener('resize', () => { clearTimeout(resizeT); resizeT = setTimeout(() => { updateCard(); drawLadder(); }, 120); });
 
 /* =====================================================================
-   6. Test runner
+   7. Test runner
    ===================================================================== */
 const stage = $('stage'), cv = $('cv');
-let sctx = null, geo = null, abortCtl = null, live = null;
+let sctx = null, geo = null, abortCtl = null, live = null, run = null;
 
 class Abort extends Error { constructor() { super('aborted'); this.name = 'Abort'; } }
 const sleep = (ms, sig) => new Promise((res, rej) => {
@@ -582,6 +791,17 @@ const sleep = (ms, sig) => new Promise((res, rej) => {
   sig.addEventListener('abort', () => { clearTimeout(t); rej(new Abort()); }, { once: true });
 });
 const nextFrame = () => new Promise(r => requestAnimationFrame(() => r()));
+// Resolve when the live trial is answered, or after `ms` (Infinity = no limit).
+function waitAnswer(ms, sig) {
+  return new Promise((res, rej) => {
+    if (live.trial.resp !== null) return res();
+    let t = null;
+    const done = () => { clearTimeout(t); res(); };
+    live.resolve = done;
+    if (isFinite(ms)) t = setTimeout(done, ms);
+    sig.addEventListener('abort', () => { clearTimeout(t); rej(new Abort()); }, { once: true });
+  });
+}
 
 function layoutStage() {
   const dpr = window.devicePixelRatio || 1;
@@ -589,106 +809,160 @@ function layoutStage() {
   cv.width = W; cv.height = H;
   sctx = cv.getContext('2d', ctxOpts);
   sctx.putImageData(solidImage(sctx, W, H), 0, 0);
-  const pxPerMM = settings.ppm * dpr;                       // device pixels per millimetre
-  const hL = Math.round(letterMM('L') * pxPerMM), hS = Math.round(letterMM('S') * pxPerMM);
-  const B = Math.round(hS * 1.2);                            // one box fits every letter size
-  // Centre the letter in the space above the keypad when the keypad is visible.
+  const pxPerMM = settings.ppm * dpr;
+  const d = settings.distMM[run.type];
+  const hL = Math.round(sizeAt(letterDeg('L'), d) * pxPerMM), hS = Math.round(sizeAt(letterDeg('S'), d) * pxPerMM);
+  const ring = Math.round(sizeAt(RING_DEG, d) * pxPerMM);
+  const B = Math.round((run.type === 'ring' ? ring : hS) * 1.2);
   const kp = $('keypad');
   const wasHidden = kp.hidden;
-  kp.hidden = !settings.showKeys;                            // measure the keypad as it will appear during letters
-  const kpH = (settings.showKeys ? kp.getBoundingClientRect().height : 0) * dpr;
+  kp.hidden = !settings.showKeys;
+  const kpH = (settings.showKeys ? kp.getBoundingClientRect().height + 8 : 0) * dpr;
   kp.hidden = wasHidden;
-  const cx = Math.round(W / 2), cy = Math.round((H - kpH) / 2);
-  geo = { W, H, dpr, h: { L: hL, M: hL, S: hS }, B, x: cx - Math.round(B / 2), y: cy - Math.round(B / 2) };
+  const cx = Math.round(W / 2), cy = Math.round((H - kpH) / 2 + 20 * dpr);
+  geo = { W, H, dpr, h: { L: hL, M: hL, S: hS }, ring, B, x: cx - Math.round(B / 2), y: cy - Math.round(B / 2) };
   geo.blank = solidImage(sctx, B, B);
-  // Crosshair: four thin dark arms around the letter area.
-  sctx.fillStyle = 'rgba(0,0,0,0.55)';
-  const gap = Math.round(B * 0.62), len = Math.round(B * 0.55), t = Math.max(1, Math.round(1.5 * dpr));
-  sctx.fillRect(cx - gap - len, cy - Math.floor(t / 2), len, t);
-  sctx.fillRect(cx + gap, cy - Math.floor(t / 2), len, t);
-  sctx.fillRect(cx - Math.floor(t / 2), cy - gap - len, t, len);
-  sctx.fillRect(cx - Math.floor(t / 2), cy + gap, t, len);
-  geo.fits = B / dpr < Math.min(cv.clientWidth, cv.clientHeight - kpH / dpr) * 0.9;
+  if (run.type === 'letters') {               // crosshair arms around the letter area (letter test only)
+    sctx.fillStyle = 'rgba(0,0,0,0.55)';
+    const gap = Math.round(B * 0.62), len = Math.round(B * 0.55), t = Math.max(1, Math.round(1.5 * dpr));
+    sctx.fillRect(cx - gap - len, cy - Math.floor(t / 2), len, t);
+    sctx.fillRect(cx + gap, cy - Math.floor(t / 2), len, t);
+    sctx.fillRect(cx - Math.floor(t / 2), cy - gap - len, t, len);
+    sctx.fillRect(cx - Math.floor(t / 2), cy + gap, t, len);
+  }
+  const usableH = cv.clientHeight - kpH / dpr - 60;
+  geo.fits = B / dpr < Math.min(cv.clientWidth, usableH) * 0.95;
 }
 
-function buildKeypad() {
+function buildKeypad(type) {
   const kp = $('keypad');
-  kp.innerHTML = '';
-  LETTERS.forEach(ch => {
-    const b = document.createElement('button'); b.type = 'button'; b.textContent = ch; b.dataset.k = ch;
-    b.addEventListener('pointerdown', e => { e.preventDefault(); answer(ch); });
-    kp.appendChild(b);
-  });
-  const n = document.createElement('button'); n.type = 'button'; n.className = 'wide'; n.textContent = "Can't see it";
-  n.addEventListener('pointerdown', e => { e.preventDefault(); answer('-'); });
-  kp.appendChild(n);
+  kp.innerHTML = ''; kp.className = type;
+  const mk = (label, val, cls) => {
+    const b = document.createElement('button'); b.type = 'button'; b.textContent = label; b.dataset.k = val;
+    if (cls) b.className = cls;
+    b.setAttribute('aria-label', val === '-' ? "Can't see it" : type === 'ring' ? `Gap ${val}` : val);
+    b.addEventListener('pointerdown', e => { e.preventDefault(); e.stopPropagation(); answer(val); });
+    kp.appendChild(b); return b;
+  };
+  if (type === 'letters') {
+    LETTERS.forEach(ch => mk(ch, ch));
+    mk("Can't see it", '-', 'wide');
+  } else {
+    const spacer = () => kp.appendChild(document.createElement('span'));
+    spacer(); mk('↑', 'up'); spacer();
+    mk('←', 'left'); mk("can't see", '-', 'small'); mk('→', 'right');
+    spacer(); mk('↓', 'down'); spacer();
+  }
 }
-function flashKey(ch) {
-  const b = document.querySelector(`#keypad button[data-k="${ch}"]`);
+function flashKey(val) {
+  const b = document.querySelector(`#keypad button[data-k="${val}"]`);
   if (b) { b.classList.add('pressed'); setTimeout(() => b.classList.remove('pressed'), 160); }
 }
-function answer(ch) {
+let fbTimer = null;
+function feedback(trial) {
+  if (!run || !run.feedback) return;
+  const target = trial.letter || trial.dir;
+  const ok = trial.resp === target;
+  const show = v => (ARROW[v] || v);
+  $('fb').textContent = ok ? '✓ right' : trial.resp === null ? `✕ no answer · it was ${show(target)}` : `✕ it was ${show(target)}`;
+  clearTimeout(fbTimer); fbTimer = setTimeout(() => { $('fb').textContent = ''; }, 900);
+}
+function answer(val) {
   if (!live || live.trial.resp !== null) return;
-  live.trial.resp = ch;
+  live.trial.resp = val;
   live.trial.rt = Math.round(performance.now() - live.t0);
-  flashKey(ch);
+  flashKey(val);
+  if (run && run.feedback && !live.deferFeedback) feedback(live.trial);
   if (live.resolve) live.resolve();
 }
 
-function letterSequence() {
+function letterSequence(n) {
   const out = [];
-  while (out.length < N_TRIALS) {
+  while (out.length < n) {
     const ch = LETTERS[Math.floor(Math.random() * LETTERS.length)];
     if (ch !== out[out.length - 1]) out.push(ch);
   }
   return out;
 }
+function dirSequence(n) {
+  const out = [];
+  while (out.length < n) {
+    const d = DIRS[Math.floor(Math.random() * 4)];
+    if (!(out.length >= 2 && out[out.length - 1] === d && out[out.length - 2] === d)) out.push(d);   // no 3 in a row
+  }
+  return out;
+}
+const hud = (blk, i, n) => { $('hudText').textContent = `${run.demo ? 'Demo' : EYE_NAME[blk.eye]} · ${CONES[blk.cone].label}${i ? ` · ${i} / ${n}` : ''}`; };
 
-async function runBlock(blk, sig) {
-  const seq = letterSequence();
+// Letter test: fixed descending ladder, 2 letters per level.
+async function runLetterBlock(blk, sig, opts = {}) {
+  const levels = opts.levels || Array.from({ length: N_LETTERS }, (_, i) => Math.floor(i / PER_LEVEL));
+  const n = levels.length;
+  const seq = letterSequence(n);
   const trials = [];
-  const self = settings.pace === 'self';
-  $('hudText').textContent = `${EYE_NAME[blk.eye]} · ${CONES[blk.cone].label}`;
-  await sleep(1200, sig);                                    // crosshair alone before the first letter
-  let prepared = stimImage(sctx, seq[0], geo.h[blk.cone], geo.B, blk.cone, contrastAt(blk.cone, 0));
-  for (let i = 0; i < N_TRIALS; i++) {
-    const level = Math.floor(i / PER_LEVEL);
-    const dur = durationAt(level);
+  const self = run.pace === 'self';
+  hud(blk);
+  await sleep(1200, sig);
+  let prepared = stimImage(sctx, 'L:' + seq[0], geo.h[blk.cone], geo.B, blk.cone, contrastAt(blk.cone, levels[0]));
+  for (let i = 0; i < n; i++) {
+    const level = levels[i], dur = durationAt(level);
     const trial = { letter: seq[i], level, c: contrastAt(blk.cone, level), eff: prepared.eff, resp: null, rt: null };
     trials.push(trial);
     await nextFrame();
     if (sig.aborted) throw new Abort();
     sctx.putImageData(prepared.img, geo.x, geo.y);
     live = { trial, t0: performance.now(), resolve: null };
-    $('hudText').textContent = `${EYE_NAME[blk.eye]} · ${CONES[blk.cone].label} · ${i + 1} / ${N_TRIALS}`;
-    // Prepare the next letter while this one is on screen.
-    if (i + 1 < N_TRIALS) {
-      const nl = Math.floor((i + 1) / PER_LEVEL);
-      prepared = stimImage(sctx, seq[i + 1], geo.h[blk.cone], geo.B, blk.cone, contrastAt(blk.cone, nl));
-    }
-    const shownAt = live.t0;
-    await sleep(Math.max(0, dur - (performance.now() - shownAt)), sig);
+    hud(blk, i + 1, n);
+    if (i + 1 < n) prepared = stimImage(sctx, 'L:' + seq[i + 1], geo.h[blk.cone], geo.B, blk.cone, contrastAt(blk.cone, levels[i + 1]));
+    await sleep(Math.max(0, dur - (performance.now() - live.t0)), sig);
     sctx.putImageData(geo.blank, geo.x, geo.y);
-    if (self) {
-      if (trial.resp === null) await new Promise((res, rej) => {
-        live.resolve = res;
-        sig.addEventListener('abort', () => rej(new Abort()), { once: true });
-      });
-      await sleep(450, sig);
-    } else {
-      await sleep(dur, sig);                                  // blank gray for the same duration; answers still count
-    }
+    if (self) { await waitAnswer(Infinity, sig); await sleep(450, sig); }
+    else await sleep(dur, sig);                        // blank gray for the same time; answers still count
+    if (trial.resp === null) feedback(trial);
     live = null;
   }
   const correct = trials.filter(t => t.resp === t.letter).length;
   return { eye: blk.eye, cone: blk.cone, score: correct * 5, trials };
 }
 
+// Ring test: adaptive (Psi-marginal), ring stays until answered or 5 s.
+async function runRingBlock(blk, sig, opts = {}) {
+  const n = opts.n || N_RING;
+  const psi = opts.fixed ? null : new Psi(blk.cone);
+  const dirs = dirSequence(n);
+  const trials = [];
+  const limit = run.pace === 'self' ? Infinity : RING_LIMIT_MS;
+  hud(blk);
+  await sleep(1000, sig);
+  for (let i = 0; i < n; i++) {
+    const xi = psi ? psi.next() : -1;
+    const c = psi ? Math.pow(10, psi.xs[xi]) : opts.fixed[i];
+    const prep = stimImage(sctx, 'C:' + dirs[i], geo.ring, geo.B, blk.cone, c);
+    const trial = { dir: dirs[i], c, eff: prep.eff, resp: null, rt: null };
+    trials.push(trial);
+    await nextFrame();
+    if (sig.aborted) throw new Abort();
+    sctx.putImageData(prep.img, geo.x, geo.y);
+    live = { trial, t0: performance.now(), resolve: null };
+    hud(blk, i + 1, n);
+    await waitAnswer(limit, sig);
+    sctx.putImageData(geo.blank, geo.x, geo.y);
+    if (trial.resp === null) feedback(trial);
+    if (psi) psi.update(xi, trial.resp === trial.dir);
+    live = null;
+    await sleep(run.feedback ? 750 : 500, sig);
+  }
+  const correct = trials.filter(t => t.resp === t.dir).length;
+  if (!psi) return { eye: blk.eye, cone: blk.cone, score: null, correct, trials };
+  const T = Math.pow(10, psi.estimate());
+  return { eye: blk.eye, cone: blk.cone, score: ringScore(blk.cone, T), threshold: T, trials };
+}
+
 function showCard(html, buttons) {
   const card = $('card');
   card.innerHTML = html + '<div class="actions"></div>';
   const row = card.querySelector('.actions');
-  card.hidden = false; $('keypad').hidden = true;
+  card.hidden = false; $('keypad').hidden = true; $('fb').textContent = '';
   return new Promise(res => {
     const done = v => { card.hidden = true; document.removeEventListener('keydown', onKey, true); res(v); };
     buttons.forEach((b, i) => {
@@ -698,7 +972,9 @@ function showCard(html, buttons) {
       row.appendChild(el);
       if (i === 0) setTimeout(() => el.focus(), 30);
     });
-    function onKey(e) { if (e.key === 'Escape' && buttons.some(b => b.value === 'quit')) { e.preventDefault(); done('quit'); } }
+    function onKey(e) {
+      if (e.key === 'Escape' && buttons.some(b => b.value === 'quit')) { e.preventDefault(); done('quit'); }
+    }
     document.addEventListener('keydown', onKey, true);
   });
 }
@@ -710,188 +986,348 @@ async function enterStage() {
   document.body.style.overflow = 'hidden';
   try { if (stage.requestFullscreen) await stage.requestFullscreen(); } catch (e) { /* optional */ }
   try { wakeLock = await navigator.wakeLock?.request('screen'); } catch (e) { /* optional */ }
-  buildKeypad();
+  buildKeypad(run.type);
   await nextFrame();
   layoutStage();
 }
 function leaveStage() {
   stage.hidden = true;
   document.body.style.overflow = '';
+  $('fb').textContent = '';
   try { if (document.fullscreenElement) document.exitFullscreen(); } catch (e) { /* ignore */ }
   try { wakeLock && wakeLock.release(); } catch (e) { /* ignore */ }
   wakeLock = null;
 }
 
-function makePlan() {
-  if (settings.mode === 'full') return ['R', 'L'].flatMap(eye => CONE_ORDER.map(cone => ({ eye, cone })));
-  if (settings.mode === 'eye') return CONE_ORDER.map(cone => ({ eye: settings.eye, cone }));
-  return [{ eye: settings.eye, cone: settings.cone }];
+function makePlan(o) {
+  if (o.mode === 'full') return ['R', 'L'].flatMap(eye => CONE_ORDER.map(cone => ({ eye, cone })));
+  if (o.mode === 'eye') return CONE_ORDER.map(cone => ({ eye: o.eye, cone }));
+  return [{ eye: o.eye, cone: o.cone }];
+}
+function introHtml(blk, b, total, newEye) {
+  const c = CONES[blk.cone], ring = run.type === 'ring';
+  const what = ring
+    ? `20 <b>${c.label.toLowerCase()}</b> rings. ${settings.showKeys ? 'Press the arrow or swipe' : 'Press the arrow key'} that points to the gap.${run.pace === 'self' ? '' : ' You have 5 seconds for each.'}`
+    : `20 <b>${c.label.toLowerCase()}</b> letters, fading out. ${settings.showKeys ? 'Tap or type' : 'Say or type'} each letter as soon as you see it.`;
+  return `<div class="eye">${EYE_NAME[blk.eye]}</div>
+    <p class="cover">${newEye ? `Cover your <b>${OTHER_EYE[blk.eye]}</b> eye with your palm.` : `Keep your ${OTHER_EYE[blk.eye]} eye covered.`}</p>
+    <p>Next: ${what} If you are not sure, guess.</p>
+    <p class="meta">Part ${b + 1} of ${total} · ${c.cone} · ${run.feedback ? 'practice, shows right or wrong' : 'exam, no hints'} · ${run.pace === 'self' ? 'no time limit' : 'timed'}</p>`;
 }
 
-async function runSession() {
-  const plan = makePlan();
-  const session = { id: Date.now(), date: new Date().toISOString(), mode: settings.mode, pace: settings.pace,
-    space: engine.space, distMM: Math.round(distMM()), calibrated: settings.calibrated, blocks: [] };
+async function start(over = {}) {
+  const o = Object.assign({ type: settings.type, mode: settings.mode, eye: settings.eye, cone: settings.cone, pace: settings.pace, fb: settings.fb }, over);
+  run = { type: o.type, pace: o.pace, feedback: o.fb === 'practice' };
+  const plan = makePlan(o);
+  const session = { id: Date.now(), date: new Date().toISOString(), type: o.type, mode: o.mode, pace: o.pace, fb: o.fb,
+    space: engine.space, distMM: Math.round(settings.distMM[o.type]), calibrated: settings.calibrated, blocks: [] };
   await enterStage();
   if (!geo.fits) {
-    await showCard('<div class="eye">Letters too large</div><p class="cover">At this distance the letters do not fit on this screen. Use a shorter viewing distance or a bigger screen.</p>',
-      [{ label: 'Back to setup', value: 'quit' }]);
-    leaveStage(); return;
+    await showCard('<div class="eye">Symbols too large</div><p class="cover">At this distance the symbols do not fit on this screen. Use a shorter viewing distance or a bigger screen.</p>', [{ label: 'Back to setup', value: 'quit' }]);
+    leaveStage(); run = null; return;
   }
   let lastEye = null;
   for (let b = 0; b < plan.length; b++) {
     const blk = plan[b];
-    const c = CONES[blk.cone];
-    const newEye = blk.eye !== lastEye;
-    const intro = `<div class="eye">${EYE_NAME[blk.eye]}</div>
-      <p class="cover">${newEye ? `Cover your <b>${OTHER_EYE[blk.eye]}</b> eye with your palm.` : `Keep your ${OTHER_EYE[blk.eye]} eye covered.`}</p>
-      <p>Next: 20 <b>${c.label.toLowerCase()}</b> letters, fading out. ${settings.showKeys ? 'Tap' : 'Say'} each letter as soon as you see it. If you are not sure, guess.</p>
-      <p class="meta">Block ${b + 1} of ${plan.length} · ${c.cone} · ${settings.pace === 'self' ? 'self-paced' : 'timed'}</p>`;
-    const choice = await showCard(intro, [{ label: 'Start', value: 'go' }, { label: 'Quit', value: 'quit' }]);
+    const choice = await showCard(introHtml(blk, b, plan.length, blk.eye !== lastEye), [{ label: 'Start', value: 'go' }, { label: 'Quit', value: 'quit' }]);
     if (choice === 'quit') break;
     $('keypad').hidden = !settings.showKeys;
     abortCtl = new AbortController();
     try {
-      session.blocks.push(await runBlock(blk, abortCtl.signal));
+      const res = run.type === 'ring' ? await runRingBlock(blk, abortCtl.signal) : await runLetterBlock(blk, abortCtl.signal);
+      session.blocks.push(res);
       lastEye = blk.eye;
     } catch (e) {
       if (!(e instanceof Abort)) throw e;
       sctx.putImageData(geo.blank, geo.x, geo.y);
       live = null;
-      const ch = await showCard('<div class="eye">Stopped</div><p class="cover">This block was not scored.</p>',
-        [{ label: 'Restart this block', value: 'again' }, { label: 'End test', value: 'quit' }]);
+      const ch = await showCard('<div class="eye">Stopped</div><p class="cover">This part was not scored.</p>',
+        [{ label: 'Restart this part', value: 'again' }, { label: 'End test', value: 'quit' }]);
       if (ch === 'again') { b--; continue; }
       break;
     } finally { abortCtl = null; $('keypad').hidden = true; }
   }
   leaveStage();
+  run = null;
   if (session.blocks.length) {
     history.unshift(session);
-    history = history.slice(0, 40);
+    history = history.slice(0, 60);
     store.set('rcct.history', history);
     renderResults(session, false);
-    renderHistory();
+    renderProgress();
+    updateDrill();
     $('resH').scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 }
 
-$('startBtn').addEventListener('click', () => { runSession().catch(err => { console.error(err); leaveStage(); }); });
+// Demo: 6 easy symbols with feedback, red-green-blue twice. Nothing is saved.
+async function demo() {
+  run = { type: settings.type, pace: 'self', feedback: true, demo: true };
+  await enterStage();
+  const ring = run.type === 'ring';
+  const go = await showCard(`<div class="eye">Demo</div>
+    <p class="cover">${ring ? 'Six rings at strong contrast. Point to the gap with the arrows or a swipe.' : 'Six letters at strong contrast. Tap or type each letter.'}</p>
+    <p>No time limit, and you will see right or wrong after each one. Use both eyes for the demo.</p>`, [{ label: 'Start demo', value: 'go' }, { label: 'Quit', value: 'quit' }]);
+  let got = 0, total = 0;
+  if (go === 'go') {
+    $('keypad').hidden = !settings.showKeys;
+    abortCtl = new AbortController();
+    try {
+      for (const cone of ['L', 'M', 'S']) {
+        const blk = { eye: 'R', cone };
+        const res = ring
+          ? await runRingBlock(blk, abortCtl.signal, { n: 2, fixed: [contrastAt(cone, 0), contrastAt(cone, 1)] })
+          : await runLetterBlock(blk, abortCtl.signal, { levels: [0, 1] });
+        got += res.trials.filter(t => t.resp === (t.letter || t.dir)).length; total += res.trials.length;
+      }
+      $('hudText').textContent = '';
+      await showCard(`<div class="eye">Demo done</div><p class="cover">You got ${got} of ${total}.</p><p>The real test starts this strong and gets much fainter. Remember to guess when you are not sure.</p>`,
+        [{ label: 'Close', value: 'quit' }]);
+    } catch (e) { if (!(e instanceof Abort)) throw e; }
+    finally { abortCtl = null; live = null; }
+  }
+  leaveStage(); run = null;
+}
+
+$('startBtn').addEventListener('click', () => { start().catch(err => { console.error(err); leaveStage(); run = null; }); });
+$('demoBtn').addEventListener('click', () => { demo().catch(err => { console.error(err); leaveStage(); run = null; }); });
 $('stopBtn').addEventListener('click', () => abortCtl && abortCtl.abort());
+const KEYDIR = { ArrowUp: 'up', ArrowDown: 'down', ArrowLeft: 'left', ArrowRight: 'right', '8': 'up', '2': 'down', '4': 'left', '6': 'right' };
 document.addEventListener('keydown', e => {
-  if (stage.hidden || !$('card').hidden) return;
+  if (stage.hidden || !$('card').hidden || !run) return;
   if (e.key === 'Escape') { e.preventDefault(); abortCtl && abortCtl.abort(); return; }
   if (e.key === ' ' || e.key === '?' || e.key === '-') { e.preventDefault(); answer('-'); return; }
-  if (/^[a-z]$/i.test(e.key)) { e.preventDefault(); answer(e.key.toUpperCase()); }  // any letter counts; non-Sloan letters score as wrong
+  if (run.type === 'ring') { if (KEYDIR[e.key]) { e.preventDefault(); answer(KEYDIR[e.key]); } return; }
+  if (/^[a-z]$/i.test(e.key)) { e.preventDefault(); answer(e.key.toUpperCase()); }   // non-Sloan letters score as wrong
 });
-window.addEventListener('resize', () => { if (!stage.hidden && !abortCtl) layoutStage(); });
+// Swipe toward the gap (ring test).
+let swipe = null;
+stage.addEventListener('pointerdown', e => { if (e.target.closest('button, #card')) return; swipe = { x: e.clientX, y: e.clientY }; });
+stage.addEventListener('pointerup', e => {
+  if (!swipe || !run || run.type !== 'ring') { swipe = null; return; }
+  const dx = e.clientX - swipe.x, dy = e.clientY - swipe.y; swipe = null;
+  if (Math.hypot(dx, dy) < 40) return;
+  answer(Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 'right' : 'left') : (dy > 0 ? 'down' : 'up'));
+});
+window.addEventListener('resize', () => { if (!stage.hidden && !abortCtl && run) layoutStage(); });
 
 /* =====================================================================
-   7. Results
+   8. Results
    ===================================================================== */
-const pct = c => (c * 100 >= 10 ? (c * 100).toFixed(0) : (c * 100).toFixed(1)) + '%';
-function coneRow(blk) {
-  const c = CONES[blk.cone];
-  const pass = blk.score >= PASS_FAA;
-  const dots = [];
+const pct = c => { const p = c * 100; return (p >= 10 ? p.toFixed(0) : p.toPrecision(2)) + '%'; };   // 2 significant digits
+const esc = s => String(s).replace(/[&<>"]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch]));
+function category(type, score) {
+  if (type === 'ring') {
+    if (score >= RING_NORMAL) return ['pass', 'Normal range'];
+    if (score >= NORMAL) return ['mid', 'Borderline'];
+    return score >= PASS_FAA ? ['mid', 'Below 75 · above FAA 55'] : ['fail', 'Below 55'];
+  }
+  if (score >= NORMAL) return ['pass', 'Pass · normal range'];
+  return score >= PASS_FAA ? ['pass', 'Pass'] : ['fail', 'Below 55'];
+}
+function dotStrip(blk) {
+  const groups = [];
   for (let lv = 0; lv < LEVELS; lv++) {
     const pair = blk.trials.filter(t => t.level === lv).map((t, j) => {
       const cls = t.resp === t.letter ? 'hit' : (t.resp === null || t.resp === '-') ? 'none' : 'miss';
       const said = t.resp === null ? 'no answer' : t.resp === '-' ? "can't see" : `answered ${t.resp}`;
       const tip = `Letter ${lv * 2 + j + 1} · ${pct(t.c)} contrast · showed ${t.letter}, ${said}`;
-      return `<span class="dot ${cls}" tabindex="0" data-tip="${tip}" aria-label="${tip}"></span>`;
+      return `<span class="dot ${cls}" tabindex="0" data-tip="${esc(tip)}" aria-label="${esc(tip)}"></span>`;
     }).join('');
     const lab = lv % 3 === 0 ? pct(contrastAt(blk.cone, lv)) : '';
-    dots.push(`<span class="pair"><span class="two">${pair}</span><span class="lab">${lab}</span></span>`);
+    groups.push(`<span class="pair"><span class="two">${pair}</span><span class="lab">${lab}</span></span>`);
+  }
+  return `<div class="dots">${groups.join('')}</div>`;
+}
+// Staircase chart: contrast of each ring (log scale) with right/wrong markers and the final threshold.
+function stairChart(blk) {
+  const W = 600, H = 190, l = 52, r = 96, t = 12, b = 30;
+  const S = blk.cone === 'S';
+  const lo = Math.log10(S ? 0.005 : 0.0005), hi = Math.log10(S ? 3 : 0.5);
+  const n = blk.trials.length;
+  const X = i => l + (W - l - r) * (n === 1 ? 0.5 : i / (n - 1));
+  const Y = c => t + (H - t - b) * (1 - (Math.log10(Math.max(Math.min(c, 10 ** hi), 10 ** lo)) - lo) / (hi - lo));
+  const ticks = (S ? [0.01, 0.03, 0.1, 0.3, 1, 3] : [0.001, 0.003, 0.01, 0.03, 0.1, 0.3]);
+  let g = ticks.map(v => `<line class="grid" x1="${l}" x2="${W - r}" y1="${Y(v)}" y2="${Y(v)}"/><text x="${l - 8}" y="${Y(v) + 4}" text-anchor="end">${pct(v)}</text>`).join('');
+  [1, Math.ceil(n / 2), n].forEach((k, j) => { g += `<text x="${X(k - 1)}" y="${H - 8}" text-anchor="${j ? 'middle' : 'start'}">${j ? '' : 'ring '}${k}</text>`; });
+  const pts = blk.trials.map((tr, i) => [X(i), Y(tr.eff)]);
+  g += `<polyline class="path" points="${pts.map(p => p.join(',')).join(' ')}"/>`;
+  if (blk.threshold) {
+    const ty = Y(blk.threshold);
+    g += `<line class="thr-line" x1="${l}" x2="${W - r}" y1="${ty}" y2="${ty}"/><text class="thr-text" x="${W - r + 8}" y="${ty + 4}">threshold</text><text class="thr-text" x="${W - r + 8}" y="${ty + 18}">${pct(blk.threshold)}</text>`;
+  }
+  blk.trials.forEach((tr, i) => {
+    const cls = tr.resp === tr.dir ? 'pt-hit' : (tr.resp === null || tr.resp === '-') ? 'pt-none' : 'pt-miss';
+    const said = tr.resp === null ? 'no answer' : tr.resp === '-' ? "can't see" : `answered ${ARROW[tr.resp]}`;
+    const tip = `Ring ${i + 1} · ${pct(tr.eff)} contrast · gap ${ARROW[tr.dir]}, ${said}${tr.rt ? ` in ${(tr.rt / 1000).toFixed(1)} s` : ''}`;
+    g += `<circle class="${cls}" cx="${pts[i][0]}" cy="${pts[i][1]}" r="5"/><circle class="hit-area" cx="${pts[i][0]}" cy="${pts[i][1]}" r="11" tabindex="0" data-tip="${esc(tip)}" aria-label="${esc(tip)}"/>`;
+  });
+  return `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Contrast of each ring shown, with the estimated threshold">${g}</svg>`;
+}
+function coneRow(blk, type) {
+  const c = CONES[blk.cone];
+  const [cls, label] = category(type, blk.score);
+  const scale = type === 'ring' ? RING_MAX : 100;
+  const ticks = (type === 'ring' ? [[PASS_FAA, 'FAA 55'], [NORMAL, '75'], [RING_NORMAL, '90']] : [[PASS_FAA, 'FAA 55'], [NORMAL, 'normal 75']])
+    .map(([v, txt]) => `<div class="tick" style="left:calc(${v / scale * 100}% - 1px)"><span>${txt}</span></div>`).join('');
+  let detail;
+  if (type === 'ring') {
+    const hits = blk.trials.filter(t => t.resp === t.dir).length;
+    const slow = blk.trials.filter(t => t.resp === null).length;
+    detail = `<p class="thr">Threshold ${blk.threshold ? pct(blk.threshold) : '–'} cone contrast · ${hits} of ${blk.trials.length} right${slow ? ` · ${slow} timed out` : ''}</p>${stairChart(blk)}`;
+  } else {
+    const slow = blk.trials.filter(t => t.resp === null).length;
+    detail = `${dotStrip(blk)}${slow ? `<p class="thr">${slow} letter${slow > 1 ? 's' : ''} got no answer in time.</p>` : ''}`;
   }
   return `<div class="cone-row">
     <div class="cone-name"><span class="swatch" style="background:${bgCss}"><i style="background:${swatchCss(blk.cone)}"></i></span><span>${c.label}<small>${c.cone}</small></span></div>
     <div class="score">${blk.score}</div>
-    <span class="chip ${pass ? 'pass' : 'fail'}">${pass ? 'Pass' : 'Below 55'}${blk.score >= NORMAL ? ' · normal range' : ''}</span>
-    <div class="bar" aria-hidden="true"><div class="track"></div><div class="fill" style="width:${blk.score}%"></div>
-      <div class="tick" style="left:calc(${PASS_FAA}% - 1px)"><span>FAA 55</span></div><div class="tick" style="left:calc(${NORMAL}% - 1px)"><span>normal 75</span></div></div>
-    <div class="dots">${dots.join('')}</div>
+    <span class="chip ${cls}">${label}</span>
+    <div class="bar" aria-hidden="true"><div class="track"></div><div class="fill" style="width:${Math.min(100, blk.score / scale * 100)}%"></div>${ticks}</div>
+    <div class="detail">${detail}</div>
   </div>`;
 }
-function patternNote(blocks) {
+function patternNote(blocks, type) {
+  const cut = type === 'ring' ? RING_NORMAL : NORMAL;
   const notes = [];
   ['R', 'L'].forEach(eye => {
     const by = Object.fromEntries(blocks.filter(b => b.eye === eye).map(b => [b.cone, b.score]));
-    if (by.L == null || by.M == null) return;
-    if (Math.min(by.L, by.M) >= NORMAL) return;
-    const low = by.M < by.L ? 'green (M-cone)' : by.L < by.M ? 'red (L-cone)' : null;
-    if (low) notes.push(`${EYE_NAME[eye]}: lowest score is ${low}. On the clinic test that pattern points to a ${by.M < by.L ? 'deutan' : 'protan'}-type deficiency.`);
+    if (by.L == null || by.M == null || Math.min(by.L, by.M) >= cut) return;
+    if (by.M === by.L) return;
+    notes.push(`${EYE_NAME[eye]}: lowest is ${by.M < by.L ? 'green (M-cone)' : 'red (L-cone)'}, which on the clinic test points to a ${by.M < by.L ? 'deutan' : 'protan'}-type pattern.`);
   });
   return notes.length ? `<p class="pattern-note">${notes.join(' ')}</p>` : '';
 }
 function renderResults(session, isExample) {
   $('exampleTag').hidden = !isExample;
+  const type = session.type || 'letters';
   const eyes = ['R', 'L'].filter(e => session.blocks.some(b => b.eye === e));
   const when = new Date(session.date);
-  let html = `<p class="small muted">${isExample ? 'This is a made-up example so you can see the layout. Run a test to replace it.' :
-    `${when.toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })} · ${session.pace === 'self' ? 'self-paced' : 'timed'} · ${Math.round(session.distMM / 25.4)} in · ${session.space === 'display-p3' ? 'Display P3' : 'sRGB'}${session.calibrated ? '' : ' · size not calibrated'}`}</p>`;
+  const meta = isExample
+    ? `Made-up example of a ${TYPE_NAME[type].toLowerCase()} result so you can see the layout. Your own results replace it.`
+    : `${TYPE_NAME[type]} · ${when.toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })} · ${session.fb === 'practice' ? 'practice' : 'exam'} · ${session.pace === 'self' ? 'no time limit' : 'timed'} · ${Math.round(session.distMM / 25.4)} in · ${session.space === 'display-p3' ? 'Display P3' : 'sRGB'}${session.calibrated ? '' : ' · size not calibrated'}`;
+  let html = `<p class="small muted">${meta}</p>`;
   eyes.forEach(eye => {
-    html += `<div class="eye-block"><h3>${EYE_NAME[eye]}</h3>${session.blocks.filter(b => b.eye === eye).map(coneRow).join('')}</div>`;
+    html += `<div class="eye-block"><h3>${EYE_NAME[eye]}</h3>${session.blocks.filter(b => b.eye === eye).map(b => coneRow(b, type)).join('')}</div>`;
   });
-  html += patternNote(session.blocks);
-  html += `<div class="legend"><span><span class="dot hit"></span>correct</span><span><span class="dot"></span>wrong letter</span><span><span class="dot none"></span>no answer</span><span>Two letters per contrast step, faintest on the right. Hover a dot for details.</span></div>`;
+  html += patternNote(session.blocks, type);
+  html += type === 'ring'
+    ? `<div class="legend"><span><svg width="12" height="12" aria-hidden="true"><circle cx="6" cy="6" r="4.5" fill="var(--ink)"/></svg>right</span><span><svg width="12" height="12" aria-hidden="true"><circle cx="6" cy="6" r="4.5" fill="none" stroke="var(--ink-2)" stroke-width="1.5"/></svg>wrong</span><span><svg width="12" height="12" aria-hidden="true"><circle cx="6" cy="6" r="4.5" fill="none" stroke="var(--ink-3)" stroke-width="1.5" stroke-dasharray="2 2"/></svg>no answer</span><span>Fainter rings sit lower. Hover a point for details.</span></div>`
+    : `<div class="legend"><span><span class="dot hit"></span>correct</span><span><span class="dot"></span>wrong letter</span><span><span class="dot none"></span>no answer</span><span>Two letters per contrast step, faintest on the right. Hover a dot for details.</span></div>`;
   $('resultPanel').innerHTML = html;
 }
-function renderHistory() {
-  if (!history.length) { $('historyPanel').hidden = true; return; }
-  $('historyPanel').hidden = false;
+function renderLatest() {
+  const own = history.find(s => s.type === settings.type);
+  if (own) renderResults(own, false); else renderResults(exampleSession(settings.type), true);
+}
+
+// Progress: one small chart per color, right eye solid and left eye dashed, FAA 55 reference line.
+let progType = 'letters';
+document.querySelectorAll('input[name="ptype"]').forEach(r => r.addEventListener('change', () => { progType = r.value; renderProgress(); }));
+function trendChart(runs, cone, type) {
+  const W = 300, H = 150, l = 30, r = 10, t = 10, b = 22;
+  const ymax = type === 'ring' ? RING_MAX : 100;
+  const n = runs.length;
+  const X = i => l + (W - l - r) * (n === 1 ? 0.5 : i / (n - 1));
+  const Y = v => t + (H - t - b) * (1 - v / ymax);
+  const ticks = type === 'ring' ? [0, 50, 100, 150] : [0, 25, 50, 75, 100];
+  let g = ticks.map(v => `<line class="grid" x1="${l}" x2="${W - r}" y1="${Y(v)}" y2="${Y(v)}"/><text x="${l - 6}" y="${Y(v) + 4}" text-anchor="end">${v}</text>`).join('');
+  g += `<line class="ref" x1="${l}" x2="${W - r}" y1="${Y(PASS_FAA)}" y2="${Y(PASS_FAA)}"/>`;
+  g += `<text x="${l}" y="${H - 6}">${n > 1 ? 'oldest' : ''}</text><text x="${W - r}" y="${H - 6}" text-anchor="end">latest</text>`;
+  ['R', 'L'].forEach(eye => {
+    const pts = [];
+    runs.forEach((s, i) => { const bk = s.blocks.find(x => x.eye === eye && x.cone === cone); if (bk) pts.push([X(i), Y(bk.score), bk.score, s.date]); });
+    if (pts.length > 1) g += `<polyline class="${eye === 'R' ? 'pathR' : 'pathL'}" points="${pts.map(p => p[0] + ',' + p[1]).join(' ')}"/>`;
+    pts.forEach(p => {
+      const tip = `${new Date(p[3]).toLocaleDateString([], { month: 'short', day: 'numeric' })} · ${EYE_NAME[eye]} · ${p[2]}`;
+      g += `<circle class="${eye === 'R' ? 'pt-hit' : 'pt-miss'}" cx="${p[0]}" cy="${p[1]}" r="4.5"/><circle class="hit-area" cx="${p[0]}" cy="${p[1]}" r="10" tabindex="0" data-tip="${esc(tip)}" aria-label="${esc(tip)}"/>`;
+    });
+  });
+  return `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="${CONES[cone].label} score over practice runs">${g}</svg>`;
+}
+function renderProgress() {
+  if (!history.length) { $('progSection').hidden = true; return; }
+  $('progSection').hidden = false;
+  if (!history.some(s => s.type === progType)) progType = history[0].type;
+  document.querySelectorAll('input[name="ptype"]').forEach(r => { r.checked = r.value === progType; });
+  const runs = history.filter(s => s.type === progType).slice(0, 15).reverse();
+  $('trends').innerHTML = CONE_ORDER.map(cone => `<div class="trend"><h4><span class="swatch" style="background:${bgCss}"><i style="background:${swatchCss(cone)}"></i></span>${CONES[cone].label}</h4>${trendChart(runs, cone, progType)}</div>`).join('');
   const cell = (s, eye, cone) => { const b = s.blocks.find(x => x.eye === eye && x.cone === cone); return b ? `<td class="${b.score < PASS_FAA ? 'low' : ''}">${b.score}</td>` : '<td>–</td>'; };
-  let h = '<thead><tr><th>Date</th><th>R red</th><th>R green</th><th>R blue</th><th>L red</th><th>L green</th><th>L blue</th></tr></thead><tbody>';
+  let h = '<thead><tr><th>Date</th><th>Test</th><th>R red</th><th>R green</th><th>R blue</th><th>L red</th><th>L green</th><th>L blue</th></tr></thead><tbody>';
   history.forEach((s, i) => {
     const d = new Date(s.date).toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
-    h += `<tr data-i="${i}" style="cursor:pointer"><td>${d}</td>${['R', 'L'].map(e => CONE_ORDER.map(c => cell(s, e, c)).join('')).join('')}</tr>`;
+    h += `<tr data-i="${i}" tabindex="0"><td>${d}</td><td>${TYPE_NAME[s.type]}${s.fb === 'practice' ? ' · practice' : ''}</td>${['R', 'L'].map(e => CONE_ORDER.map(c => cell(s, e, c)).join('')).join('')}</tr>`;
   });
   $('histTable').innerHTML = h + '</tbody>';
-  $('histTable').querySelectorAll('tbody tr').forEach(tr => tr.addEventListener('click', () => renderResults(history[+tr.dataset.i], false)));
+  $('histTable').querySelectorAll('tbody tr').forEach(tr => {
+    const show = () => { renderResults(history[+tr.dataset.i], false); $('resH').scrollIntoView({ behavior: 'smooth' }); };
+    tr.addEventListener('click', show);
+    tr.addEventListener('keydown', e => { if (e.key === 'Enter') show(); });
+  });
 }
 $('clearBtn').addEventListener('click', () => { $('clearConfirm').hidden = false; });
 $('clearNo').addEventListener('click', () => { $('clearConfirm').hidden = true; });
 $('clearYes').addEventListener('click', () => {
   history = []; store.set('rcct.history', history); $('clearConfirm').hidden = true;
-  renderHistory(); renderResults(exampleSession(), true);
+  renderProgress(); renderLatest(); updateDrill();
 });
 
-// Tooltip for result dots (hover and keyboard focus).
+// Tooltip for result marks (hover and keyboard focus).
 const tip = $('tip');
 function showTip(el) {
-  tip.textContent = el.dataset.tip; tip.hidden = false;
+  tip.textContent = el.dataset.tip || el.getAttribute('data-tip'); tip.hidden = false;
   const r = el.getBoundingClientRect(), tw = tip.offsetWidth;
   tip.style.left = Math.max(8, Math.min(window.innerWidth - tw - 8, r.left + r.width / 2 - tw / 2)) + 'px';
   tip.style.top = (r.top - tip.offsetHeight - 8 < 0 ? r.bottom + 8 : r.top - tip.offsetHeight - 8) + 'px';
 }
-['mouseover', 'focusin'].forEach(ev => document.addEventListener(ev, e => { const d = e.target.closest && e.target.closest('.dot[data-tip]'); if (d) showTip(d); }));
-['mouseout', 'focusout'].forEach(ev => document.addEventListener(ev, e => { if (e.target.closest && e.target.closest('.dot[data-tip]')) tip.hidden = true; }));
+['mouseover', 'focusin'].forEach(ev => document.addEventListener(ev, e => { const d = e.target.closest && e.target.closest('[data-tip]'); if (d) showTip(d); }));
+['mouseout', 'focusout'].forEach(ev => document.addEventListener(ev, e => { if (e.target.closest && e.target.closest('[data-tip]')) tip.hidden = true; }));
 window.addEventListener('scroll', () => { tip.hidden = true; }, { passive: true });
 
-// Example result (clearly labeled) so the page is never empty: a typical mild deutan-type pattern.
-function exampleSession() {
-  const pattern = { L: 17, M: 9, S: 18 };   // letters correct
-  const mk = (eye, cone, shift) => {
-    const n = pattern[cone] + shift;
-    const trials = Array.from({ length: N_TRIALS }, (_, i) => {
-      const letter = LETTERS[(i * 7 + cone.charCodeAt(0)) % 10];
-      const lv = Math.floor(i / 2);
-      const ok = i < n;
-      return { letter, level: lv, c: contrastAt(cone, lv), eff: contrastAt(cone, lv), resp: ok ? letter : (i % 3 === 0 ? null : LETTERS[(i + 3) % 10]), rt: null };
-    });
-    return { eye, cone, score: n * 5, trials };
-  };
-  return { date: new Date().toISOString(), pace: 'timed', distMM: 914, space: engine.space, calibrated: true,
-    blocks: [mk('R', 'L', 0), mk('R', 'M', 0), mk('R', 'S', 0), mk('L', 'L', -1), mk('L', 'M', 1), mk('L', 'S', 0)] };
+// Example results (clearly labeled), a typical mild deutan-type pattern, made with a seeded simulated observer.
+function rng(seed) { return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function exampleSession(type) {
+  const rand = rng(7);
+  const sim = { L: 0.035, M: 0.13, S: 0.16 };              // simulated thresholds
+  const blocks = [];
+  ['R', 'L'].forEach((eye, ei) => CONE_ORDER.forEach(cone => {
+    const T = sim[cone] * (ei ? 1.15 : 1);
+    const pSee = c => 1 - Math.exp(-Math.pow(c / T, 2.5));
+    if (type === 'ring') {
+      const psi = new Psi(cone, srgbEngine), trials = [];
+      for (let i = 0; i < N_RING; i++) {
+        const xi = psi.next(), c = Math.pow(10, psi.xs[xi]);
+        const dir = DIRS[Math.floor(rand() * 4)];
+        const ok = rand() < 0.25 + 0.72 * pSee(c);
+        const resp = ok ? dir : DIRS[(DIRS.indexOf(dir) + 1 + Math.floor(rand() * 3)) % 4];
+        psi.update(xi, ok);
+        trials.push({ dir, c, eff: c, resp, rt: Math.round(900 + rand() * 1800) });
+      }
+      const thr = Math.pow(10, psi.estimate());
+      blocks.push({ eye, cone, score: ringScore(cone, thr), threshold: thr, trials });
+    } else {
+      const trials = Array.from({ length: N_LETTERS }, (_, i) => {
+        const level = Math.floor(i / 2), c = contrastAt(cone, level);
+        const letter = LETTERS[Math.floor(rand() * 10)];
+        const ok = rand() < 0.1 + 0.88 * pSee(c);
+        return { letter, level, c, eff: c, resp: ok ? letter : (rand() < 0.3 ? null : LETTERS[(LETTERS.indexOf(letter) + 3) % 10]), rt: null };
+      });
+      blocks.push({ eye, cone, score: trials.filter(t => t.resp === t.letter).length * 5, trials });
+    }
+  }));
+  return { type, date: new Date().toISOString(), pace: 'timed', fb: 'exam', distMM: 914, space: engine.space, calibrated: true, blocks };
 }
 
 /* =====================================================================
-   8. Boot
+   9. Boot
    ===================================================================== */
+showDist();
 updateCard();
 updateLines();
-drawLadder();
-if (history.length) renderResults(history[0], false); else renderResults(exampleSession(), true);
-renderHistory();
+drawIcons();
+syncPanel();
+renderLatest();
+renderProgress();
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { updateCard(); });
 </script>
 
