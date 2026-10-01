@@ -1,54 +1,62 @@
 # RCCT Practice Test
 
-Practice versions of both cone contrast color vision tests, for someone retaking a color vision screening.
-Open `index.html` in any modern browser. No install or server is needed.
+Practice versions of the FAA computer color vision tests, for someone retaking a color vision screening.
+Open `index.html` in any modern browser (phone, iPad or laptop). No install or server is needed.
 
-## The two test types
+## The three test types
 
-| Item | Letters (Rabin CCT, Innova military version) | C ring (ColorDx / Konan CCT-HD) |
-|---|---|---|
-| Symbol | Sloan letters C D H K N O R S V Z inside a crosshair | Landolt C, gap up, down, left or right |
-| Answer | Letter, typed or tapped (clinic: read aloud) | Arrow key, on-screen arrow, or swipe toward the gap |
-| Contrast | Fixed fade: 10 steps of 0.16 log units, 2 letters each. Red/green 27.5% to 1%, blue 173% to ~6% | Adaptive Psi-marginal method, 20 rings per color |
-| Timing | Letter 1.0 to 1.6 s, then blank gray for the same time | Ring stays up to 5 s or until answered |
-| Size | Red/green 20/330, blue 20/440. Clinic distance 36 in | 13 mm ring with 2.6 mm gap at 60 cm (1.24 deg) |
-| Score | Letters correct x 5 (0 to 100) | Threshold on the same Rabin scale (0 to 175) |
-
-Both run each eye separately in the order red (L-cone), green (M-cone), blue (S-cone).
-Reference lines: FAA pass for the military RCCT is 55 per color. Normal is 75 (CCT-HD studies also use 90).
+| Item | C ring (Rabin cone test, ring version) | Letters (Rabin cone test) | Number plates (Waggoner style) |
+|---|---|---|---|
+| Symbol | One Landolt C in the middle, gap up/down/left/right | Sloan letters C D H K N O R S V Z in a crosshair | 1-2 digit number hidden in colored dots |
+| Answer | Arrow key, on-screen arrow, or swipe toward the gap | Letter key or on-screen letter | Number pad, N for no number |
+| Contrast | Adaptive Psi-marginal method, 20 rings per color | Fixed fade: 10 steps of 0.16 log units, 2 letters each | 25 red-green plates at 5 color strengths, optional 12 blue-yellow |
+| Timing | Stays until answered (default) or 5 s limit | 1.0-1.6 s flash, then blank, or no limit | No limit (default) or 5 s |
+| Size | 1.24 deg ring (13 mm at 60 cm) | 20/330 and 20/440 letters | ~6.9 deg plate, capped to fit the screen |
+| Score | Threshold on the Rabin scale, 0-175 | Letters correct x 5, 0-100 | Plates correct, of 25 |
+| FAA pass | 55 per color, each eye | 55 per color, each eye | 21 of 25 (as reported by providers) |
 
 ## Practice features
 
 - Exam mode (no hints) or practice mode (right/wrong after each answer).
-- Timed like the clinic, or no time limit.
-- 6-symbol demo at strong contrast to learn the controls.
-- "Drill" button that repeats the weakest color from the last run.
-- Results per color with a dot strip (letters) or staircase chart (ring), progress charts and a history table.
+- Demo at strong contrast to learn the controls.
+- Clinic scores can be entered and are marked on each practice result.
+- "Drill" button repeats the weakest color from the last run.
+- Results with staircase chart (ring), dot strip (letters) or accuracy-by-strength chart (plates).
+- Progress charts per test and a history table, stored only in the browser.
+- Layout works in portrait and landscape on phones and tablets.
 
 ## How the colors are computed
 
-1. The display color space (sRGB or Display P3) is converted to cone excitations with the Smith & Pokorny fundamentals.
-2. The background gray uses the chromaticity from Rabin 2011 (x 0.299, y 0.300) at 20% of screen white.
-3. Each symbol changes only one cone type's excitation. The other two cones see no change.
-4. Faint symbols use per-pixel random dithering. At 1% contrast the measured average is within 0.005% of target.
+1. The display color space (sRGB or Display P3) is converted to cone excitations (Smith & Pokorny fundamentals).
+2. Ring and letter symbols change only one cone type's excitation. Faint symbols use per-pixel dithering;
+   at 1% contrast the measured average is within 0.005% of target.
+3. Plates: number and background dots differ by equal and opposite L- and M-cone contrast. Each dot also gets random
+   lightness (0.55-1.45x) and random blue-yellow hue (S-cone +/-35%), so protans and deutans are left with only weak,
+   masked cues. The strongest difference is capped to what the screen can show without clipping.
 
 ## Verified
 
-- Simulated observers (300 runs each): the ring test's median score matched the true score within 1 point.
-  A single 20-ring run varies about +/-8 points (10th to 90th percentile), so average several runs.
-- Letter timing measured in Chromium: 2.0 s per letter at the start, 3.2 s at the faintest step.
+- Ring test, 300 simulated takers per threshold: median score within 1 point of the true score;
+  a single 20-ring run varies about +/-8 points (10th-90th percentile).
+- Plates: number visible to normal color vision; hidden in simulated deuteranope and protanope views (Machado 2009).
+- End-to-end runs on iPhone, iPad, laptop and landscape phone sizes in Chromium, including timeouts and auto-submit.
 
 ## Limits
 
 - Home screens are not calibrated, so scores can differ from the clinic by a few points.
-- On sRGB screens the strongest green contrast is capped at about 23% instead of 27.5%.
-- The ring test's adaptive method follows the published description, not the device's source code.
-- Practice cannot change cone function. It helps with the format: speed, guessing, one eye at a time.
+- The ring test's adaptive method follows the published description, not the device's code.
+- Plates are generated from the same principle as Waggoner plates, not copied. Plate difficulty for normal color
+  vision has not been checked with a real person yet.
+- Practice cannot change cone function. It helps with format, speed and guessing.
 
 ## Sources
 
 - Rabin J, Gooch J, Ivan D. Rapid quantification of color vision: the cone contrast test. Invest Ophthalmol Vis Sci. 2011;52:816-820. https://pubmed.ncbi.nlm.nih.gov/21051721/
 - FAA Guide for Aviation Medical Examiners, Item 52. https://www.faa.gov/ame_guide/app_process/exam_tech/item52/et
+- FAA Color Vision FAQs (updated 2025-08-27). https://www.faa.gov/ame_guide/media/Color_Vision_FAQS.pdf
 - AFRL-RH-WP-TR-2019-0122, Comparison of cone contrast tests for color vision. https://apps.dtic.mil/sti/trecms/pdf/AD1154166.pdf
-- Quantitative cone contrast threshold testing (ColorDx CCT-HD methods). https://link.springer.com/article/10.1186/s40942-023-00442-3
-- Cone contrast test-HD: sensitivity and specificity in red-green dichromacy. https://www.researchgate.net/publication/368972059
+- Quantitative cone contrast threshold testing (ColorDx methods). https://link.springer.com/article/10.1186/s40942-023-00442-3
+- Cone contrast test-HD in red-green dichromacy. https://www.researchgate.net/publication/368972059
+- Evaluation of the performance of the Waggoner computerised colour vision test (2025). https://avehjournal.org/index.php/aveh/article/view/1027
+- Ng JS et al. Evaluation of the Waggoner Computerized Color Vision Test. Optom Vis Sci. 2015. https://journals.lww.com/optvissci/fulltext/2015/04000/evaluation_of_the_waggoner_computerized_color.14.aspx
+- Machado GM, Oliveira MM, Fernandes LAF. A physiologically-based model for simulation of color vision deficiency. IEEE TVCG 2009.
